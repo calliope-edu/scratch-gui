@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+    app:
+        build: ./
+        volumes:
+            - .:/srv/app
+            - ../scratch-vm:/srv/app/node_modules/scratch-vm
+        ports:
+            - '8601:8601'
+
+    proxy:
+        build:
+            context: .
+            dockerfile: ./Dockerfile.proxy
+        ports:
+            - 80:80
+            - 443:443
+        links:
+            - app:app
+        depends_on:
+            - app

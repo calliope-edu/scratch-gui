@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+    app:
+        build: ./Dockerfile.prod
+        ports:
+            - 80:80
+            - 443:443

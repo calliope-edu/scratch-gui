@@ -326,5 +326,5 @@ import extensionLoader from './extensionLoader/index.jsx';
 extensions.unshift(extensionLoader);
 
 // Injected for extra extension microbitMore
-import microbitMore from './microbitMore/index.jsx';
-extensions.unshift(microbitMore);
+import calliopeMini from './calliopeMini/index.jsx';
+extensions.unshift(calliopeMini);

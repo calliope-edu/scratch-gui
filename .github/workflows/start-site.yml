@@ -1,0 +1,24 @@
+name: Start Site
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - calliope
+
+jobs:
+    build-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout gui
+              uses: actions/checkout@v3
+              with:
+                  ref: 'calliope'
+                  fetch-depth: 0
+            - run: npm install
+            - run: npm run build
+            - name: publish
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./build

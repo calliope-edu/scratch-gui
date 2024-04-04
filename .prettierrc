@@ -3,5 +3,7 @@
     "useTabs": false,
     "singleQuote": true,
     "trailingComma": "none",
-    "quoteProps": "consistent"
+    "quoteProps": "consistent",
+    "arrowParens": "avoid",
+    "bracketSpacing": false
 }

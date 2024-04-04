@@ -82,7 +82,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "blocks-only.html",
-    "revision": "d82d272739751cea956f92b26ff869eb"
+    "revision": "54265ec0c4335c3d4addb6765fff3114"
   }, {
     "url": "chunks/blocksonly.js",
     "revision": "69be8e5e9dd2fceedc2cf5d02ee3f3a9"
@@ -109,7 +109,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "ce46d26be0f9859dfabf9a6e06a7f71f"
   }, {
     "url": "compatibility-testing.html",
-    "revision": "b8db33c7b262a1f75ef93c9a534eec27"
+    "revision": "b1ec92f2763dbb65e509e9baccf0824a"
   }, {
     "url": "https://assets.scratch.mit.edu/internalapi/asset/0015433a406a53f00b792424b823268c.png/get/",
     "revision": "0015433a406a53f00b792424b823268c"
@@ -4105,7 +4105,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "ff8b8c3bf841a11fd5fe3afaa92be1b5"
   }, {
     "url": "index.html",
-    "revision": "7319b3b9131c4e9d2f4890ac990e7560"
+    "revision": "9eb596ac545a2a21e7f03b47d6bd1c70"
   }, {
     "url": "lib.min.js",
     "revision": "dfbb8d5d3dd730ee9167396c506a43bf"
@@ -4114,7 +4114,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "8673da3527f003f4648159b88c88ab31"
   }, {
     "url": "player.html",
-    "revision": "b6914cb061899b8cdbe84ebd34b447cd"
+    "revision": "8613e4c36a8f732f5c4c4c57ea08fc15"
   }, {
     "url": "static/assets/00aa0c4320b93631ab3c223604ead431.svg",
     "revision": null

@@ -37,8 +37,8 @@
       "type": "image/png"
     }
   ],
-  "name": "Xcratch",
-  "short_name": "Xcratch",
+  "name": "Calliope mini",
+  "short_name": "Calliope mini",
   "orientation": "any",
   "display": "standalone",
   "start_url": ".",

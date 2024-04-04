@@ -190,7 +190,7 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
                 template: 'src/playground/index.ejs',
-                title: 'Xcratch'
+                title: 'Calliope mini'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'blocksonly'],
@@ -244,15 +244,15 @@ module.exports = [
                 maximumFileSizeToCacheInBytes: 32 * 1024 * 1024
             }),
             new WebpackPwaManifest({
-                name: 'Xcratch',
-                short_name: 'Xcratch',
+                name: 'Calliope mini',
+                short_name: 'Calliope mini',
                 description: 'Extendable Scratch3 mod',
                 background_color: '#ffffff',
                 orientation: 'any',
                 crossorigin: 'use-credentials',
                 inject: true,
                 ios: {
-                    'apple-mobile-web-app-title': 'Xcratch',
+                    'apple-mobile-web-app-title': 'Calliope mini',
                     'apple-mobile-web-app-status-bar-style': 'default'
                 },
                 icons: [

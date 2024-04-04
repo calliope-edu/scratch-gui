@@ -6,8 +6,8 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-var WorkboxPlugin = require('workbox-webpack-plugin');
-var WebpackPwaManifest = require('webpack-pwa-manifest');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 // PostCss
 const autoprefixer = require('autoprefixer');
@@ -42,64 +42,76 @@ const base = {
         ]
     },
     module: {
-        rules: [{
-            test: /\.jsx?$/,
-            loader: 'babel-loader',
-            include: [
-                path.resolve(__dirname, 'src'),
-                /node_modules[\\/]scratch-[^\\/]+[\\/]src/,
-                /node_modules[\\/]pify/,
-                /node_modules[\\/]@vernier[\\/]godirect/
-            ],
-            options: {
-                // Explicitly disable babelrc so we don't catch various config
-                // in much lower dependencies.
-                babelrc: false,
-                plugins: [
-                    '@babel/plugin-syntax-dynamic-import',
-                    '@babel/plugin-transform-async-to-generator',
-                    '@babel/plugin-proposal-object-rest-spread',
-                    ['react-intl', {
-                        messagesDir: './translations/messages/'
-                    }]],
-                presets: ['@babel/preset-env', '@babel/preset-react']
-            }
-        },
-        {
-            test: /\.css$/,
-            use: [{
-                loader: 'style-loader'
-            }, {
-                loader: 'css-loader',
+        rules: [
+            {
+                test: /\.jsx?$/,
+                loader: 'babel-loader',
+                include: [
+                    path.resolve(__dirname, 'src'),
+                    /node_modules[\\/]scratch-[^\\/]+[\\/]src/,
+                    /node_modules[\\/]pify/,
+                    /node_modules[\\/]@vernier[\\/]godirect/
+                ],
                 options: {
-                    modules: true,
-                    importLoaders: 1,
-                    localIdentName: '[name]_[local]_[hash:base64:5]',
-                    camelCase: true
+                    // Explicitly disable babelrc so we don't catch various config
+                    // in much lower dependencies.
+                    babelrc: false,
+                    plugins: [
+                        '@babel/plugin-syntax-dynamic-import',
+                        '@babel/plugin-transform-async-to-generator',
+                        '@babel/plugin-proposal-object-rest-spread',
+                        [
+                            'react-intl',
+                            {
+                                messagesDir: './translations/messages/'
+                            }
+                        ]
+                    ],
+                    presets: ['@babel/preset-env', '@babel/preset-react']
                 }
-            }, {
-                loader: 'postcss-loader',
-                options: {
-                    ident: 'postcss',
-                    plugins: function () {
-                        return [
-                            postcssImport,
-                            postcssVars,
-                            autoprefixer
-                        ];
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: '[name]_[local]_[hash:base64:5]',
+                            camelCase: true
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                            plugins: function () {
+                                return [
+                                    postcssImport,
+                                    postcssVars,
+                                    autoprefixer
+                                ];
+                            }
+                        }
                     }
-                }
-            }]
-        },
-        {
-            test: /\.hex$/,
-            use: [{
-                loader: 'url-loader',
-                options: {
-                    limit: 16 * 1024
-                }
-            }]
-        }]
+                ]
+            },
+            {
+                test: /\.hex$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 16 * 1024
+                        }
+                    }
+                ]
+            }
+        ]
     },
     optimization: {
         minimizer: [
@@ -140,7 +152,8 @@ module.exports = [
             'lib.min': ['react', 'react-dom'],
             'gui': './src/playground/index.jsx',
             'blocksonly': './src/playground/blocks-only.jsx',
-            'compatibilitytesting': './src/playground/compatibility-testing.jsx',
+            'compatibilitytesting':
+                './src/playground/compatibility-testing.jsx',
             'player': './src/playground/player.jsx'
         },
         output: {
@@ -177,7 +190,7 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
                 template: 'src/playground/index.ejs',
-                title: 'Xcratch',
+                title: 'Xcratch'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'blocksonly'],
@@ -227,9 +240,7 @@ module.exports = [
                 clientsClaim: true,
                 skipWaiting: true,
                 additionalManifestEntries: assetsManifest,
-                exclude: [
-                    /\.DS_Store/
-                ],
+                exclude: [/\.DS_Store/],
                 maximumFileSizeToCacheInBytes: 32 * 1024 * 1024
             }),
             new WebpackPwaManifest({
@@ -260,55 +271,56 @@ module.exports = [
         ])
     })
 ].concat(
-    process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist' ? (
-        // export as library
-        defaultsDeep({}, base, {
-            target: 'web',
-            entry: {
-                'scratch-gui': './src/index.js'
-            },
-            output: {
-                libraryTarget: 'umd',
-                path: path.resolve('dist'),
-                publicPath: `${STATIC_PATH}/`
-            },
-            externals: {
-                'react': 'react',
-                'react-dom': 'react-dom'
-            },
-            module: {
-                rules: base.module.rules.concat([
-                    {
-                        test: /\.(svg|png|wav|mp3|gif|jpg)$/,
-                        loader: 'url-loader',
-                        options: {
-                            limit: 2048,
-                            outputPath: 'static/assets/',
-                            publicPath: `${STATIC_PATH}/assets/`
-                        }
-                    }
-                ])
-            },
-            plugins: base.plugins.concat([
-                new CopyWebpackPlugin({
-                    patterns: [
-                        {
-                            from: 'extension-worker.{js,js.map}',
-                            context: 'node_modules/scratch-vm/dist/web',
-                            noErrorOnMissing: true
-                        }
-                    ]
-                }),
-                // Include library JSON files for scratch-desktop to use for downloading
-                new CopyWebpackPlugin({
-                    patterns: [
-                        {
-                            from: 'src/lib/libraries/*.json',
-                            to: 'libraries',
-                            flatten: true
-                        }
-                    ]
-                })
-            ])
-        })) : []
+    process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist'
+        ? // export as library
+          defaultsDeep({}, base, {
+              target: 'web',
+              entry: {
+                  'scratch-gui': './src/index.js'
+              },
+              output: {
+                  libraryTarget: 'umd',
+                  path: path.resolve('dist'),
+                  publicPath: `${STATIC_PATH}/`
+              },
+              externals: {
+                  'react': 'react',
+                  'react-dom': 'react-dom'
+              },
+              module: {
+                  rules: base.module.rules.concat([
+                      {
+                          test: /\.(svg|png|wav|mp3|gif|jpg)$/,
+                          loader: 'url-loader',
+                          options: {
+                              limit: 2048,
+                              outputPath: 'static/assets/',
+                              publicPath: `${STATIC_PATH}/assets/`
+                          }
+                      }
+                  ])
+              },
+              plugins: base.plugins.concat([
+                  new CopyWebpackPlugin({
+                      patterns: [
+                          {
+                              from: 'extension-worker.{js,js.map}',
+                              context: 'node_modules/scratch-vm/dist/web',
+                              noErrorOnMissing: true
+                          }
+                      ]
+                  }),
+                  // Include library JSON files for scratch-desktop to use for downloading
+                  new CopyWebpackPlugin({
+                      patterns: [
+                          {
+                              from: 'src/lib/libraries/*.json',
+                              to: 'libraries',
+                              flatten: true
+                          }
+                      ]
+                  })
+              ])
+          })
+        : []
 );

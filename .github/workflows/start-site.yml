@@ -16,6 +16,7 @@ jobs:
                   ref: 'calliope'
                   fetch-depth: 0
             - run: npm install
+            - run: npm update scratch-vm
             - run: npm run build
             - name: publish
               uses: peaceiris/actions-gh-pages@v3

@@ -4108,10 +4108,10 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "9eb596ac545a2a21e7f03b47d6bd1c70"
   }, {
     "url": "lib.min.js",
-    "revision": "9eaccd5c2520c3ac9424795cdb384af0"
+    "revision": "fa885d80d69153512c591aa95b863699"
   }, {
     "url": "lib.min.js.map",
-    "revision": "0fc8bf72788fbf7ae65873c4de23c3b1"
+    "revision": "fcfa9492818fe4d8d7564d482e296c17"
   }, {
     "url": "player.html",
     "revision": "8613e4c36a8f732f5c4c4c57ea08fc15"
@@ -4233,6 +4233,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/679ce05ac8c35bbf83f596e895ab711b.svg",
     "revision": null
   }, {
+    "url": "static/assets/6a2a7a22fe73ea260145993eb02a91e5.svg",
+    "revision": null
+  }, {
     "url": "static/assets/6a559591c59185e10a44460bfa2c7fcb.jpg",
     "revision": null
   }, {
@@ -4255,6 +4258,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/7911235b3ccae7b7452ba3da6b5e9c7f.svg",
+    "revision": null
+  }, {
+    "url": "static/assets/7927217c728d42ffa0bb3d7e6e5d924d.svg",
     "revision": null
   }, {
     "url": "static/assets/79a644579518611a7b397f85a32cfb85.svg",
@@ -4291,9 +4297,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/86f568a0ecc0badac2c4952b39fff148.svg",
-    "revision": null
-  }, {
-    "url": "static/assets/87b6045ee0eea68aef9ad8a1759e380a.svg",
     "revision": null
   }, {
     "url": "static/assets/8be7b8c8a8d7a982bf7f892af94629fe.svg",
@@ -4333,6 +4336,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/9d72f82fa6dbcfca230a68ba55d1fe96.jpg",
+    "revision": null
+  }, {
+    "url": "static/assets/9df2c9aa9eef2c7982d3abfd2cba2ecc.svg",
     "revision": null
   }, {
     "url": "static/assets/a11919e102077f40302da55fb9150440.svg",
@@ -4440,9 +4446,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/d93b3fbb26a6c63230cf52adeabbee15.png",
     "revision": null
   }, {
-    "url": "static/assets/db393c73e841816b6245153b015fab8e.png",
-    "revision": null
-  }, {
     "url": "static/assets/e4dfc45f34b4606356c4c70ba14a96f0.svg",
     "revision": null
   }, {
@@ -4458,6 +4461,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/e962bb14129d55b565bd1ebdebdf6cce.svg",
     "revision": null
   }, {
+    "url": "static/assets/eb0c73cb0eedc8fc0c8acbb62229382d.png",
+    "revision": null
+  }, {
     "url": "static/assets/ecd34a51965de9cc31cf3b2e9167054f.jpg",
     "revision": null
   }, {
@@ -4470,13 +4476,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/f6d9f33ec366a89a58b3cf0e125adf97.svg",
     "revision": null
   }, {
-    "url": "static/assets/f7af5d99063e4c19351a53344f55f218.svg",
-    "revision": null
-  }, {
     "url": "static/assets/f9a0fb45ee35279e05b6f4e637509777.svg",
-    "revision": null
-  }, {
-    "url": "static/assets/fbc5f43326a7f2d16305ca726987ab20.svg",
     "revision": null
   }, {
     "url": "static/assets/ff69eb6d9e2044232f0187954982fb3c.png",

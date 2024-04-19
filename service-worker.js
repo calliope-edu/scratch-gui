@@ -4108,10 +4108,10 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "9eb596ac545a2a21e7f03b47d6bd1c70"
   }, {
     "url": "lib.min.js",
-    "revision": "64598104c689fcb701adec87d2f81f51"
+    "revision": "b79f91062b36885b303b274276c4ba6c"
   }, {
     "url": "lib.min.js.map",
-    "revision": "da04e703f4a332a1f4bcc368c4b3aac6"
+    "revision": "c59e980e852220e0c9b52268963dcfff"
   }, {
     "url": "player.html",
     "revision": "8613e4c36a8f732f5c4c4c57ea08fc15"
@@ -4123,9 +4123,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/0ab67d44ea028509ccaed85363ef086e.png",
-    "revision": null
-  }, {
-    "url": "static/assets/0d310f1164920f25b05fe0b8564bb8f6.png",
     "revision": null
   }, {
     "url": "static/assets/10a6126b7bc54305463d0488d7b8c67e.svg",
@@ -4152,6 +4149,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/25db5e5bcc09e8b973e5e8775139a188.jpg",
     "revision": null
   }, {
+    "url": "static/assets/26a6bbad092243ce2e2bb11e3165b3c0.svg",
+    "revision": null
+  }, {
     "url": "static/assets/2d87300fabb15fd7c2ef59f9ca2fc921.jpg",
     "revision": null
   }, {
@@ -4159,6 +4159,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/316864c7b28097124b92ead8b0524f54.jpg",
+    "revision": null
+  }, {
+    "url": "static/assets/323f8cd21b6e47e0d70a658a10702c2d.svg",
     "revision": null
   }, {
     "url": "static/assets/32d903cafc72328bd30afce14bfa4c79.svg",
@@ -4336,9 +4339,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/9d72f82fa6dbcfca230a68ba55d1fe96.jpg",
-    "revision": null
-  }, {
-    "url": "static/assets/9df2c9aa9eef2c7982d3abfd2cba2ecc.svg",
     "revision": null
   }, {
     "url": "static/assets/a11919e102077f40302da55fb9150440.svg",

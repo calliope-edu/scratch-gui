@@ -10,15 +10,13 @@ import ConnectionIconURL from './connection-icon.svg';
 import ConnectionSmallIconURL from './connection-small-icon.svg';
 import translations from './translations.json';
 
-const version = 'v2-0.2.5';
-
 const entry = {
     get name() {
-        return `${formatMessage({
+        return formatMessage({
             defaultMessage: 'Calliope mini',
             description: 'Name of this extension',
             id: 'calliopeMini.entry.name'
-        })} (${version})`;
+        });
     },
     extensionId: 'calliopeMini',
     extensionURL: '',

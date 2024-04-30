@@ -46,7 +46,8 @@ const entry = {
             id: 'gui.extension.microbit.connectingMessage'
         });
     },
-    helpLink: '',
+    helpLink:
+        'https://calliope.cc/programmieren/editoren/calliope-mini-blocks-scratch-programmieren',
     setFormatMessage: formatter => {
         formatMessage = formatter;
     },

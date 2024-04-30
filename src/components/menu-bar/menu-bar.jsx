@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import {connect} from 'react-redux';
+import {compose} from 'redux';
 import {
     defineMessages,
     FormattedMessage,
@@ -18,12 +18,12 @@ import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
 import CommunityButton from './community-button.jsx';
 import ShareButton from './share-button.jsx';
-import { ComingSoonTooltip } from '../coming-soon/coming-soon.jsx';
+import {ComingSoonTooltip} from '../coming-soon/coming-soon.jsx';
 import Divider from '../divider/divider.jsx';
 import SaveStatus from './save-status.jsx';
 import ProjectWatcher from '../../containers/project-watcher.jsx';
 import MenuBarMenu from './menu-bar-menu.jsx';
-import { MenuItem, MenuSection } from '../menu/menu.jsx';
+import {MenuItem, MenuSection} from '../menu/menu.jsx';
 import ProjectTitleInput from './project-title-input.jsx';
 import AuthorInfo from './author-info.jsx';
 import AccountNav from '../../containers/account-nav.jsx';
@@ -34,8 +34,8 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import SettingsMenu from './settings-menu.jsx';
 
-import { openTipsLibrary } from '../../reducers/modals';
-import { setPlayer } from '../../reducers/mode';
+import {openTipsLibrary} from '../../reducers/modals';
+import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
     isTimeTravel1920,
@@ -90,7 +90,7 @@ import aboutIcon from './icon--about.svg';
 import fileIcon from './icon--file.svg';
 import editIcon from './icon--edit.svg';
 
-import scratchLogo from './calliope.png';
+import scratchLogo from './calliope.svg';
 import ninetiesLogo from './nineties_logo.svg';
 import catLogo from './cat_logo.svg';
 import prehistoricLogo from './prehistoric-logo.svg';
@@ -136,7 +136,7 @@ MenuBarItemTooltip.propTypes = {
     place: PropTypes.oneOf(['top', 'bottom', 'left', 'right'])
 };
 
-const MenuItemTooltip = ({ id, isRtl, children, className }) => (
+const MenuItemTooltip = ({id, isRtl, children, className}) => (
     <ComingSoonTooltip
         className={classNames(styles.comingSoon, className)}
         isRtl={isRtl}
@@ -155,7 +155,7 @@ MenuItemTooltip.propTypes = {
     isRtl: PropTypes.bool
 };
 
-const AboutButton = (props) => (
+const AboutButton = props => (
     <Button
         className={classNames(styles.menuBarItem, styles.hoverable)}
         iconClassName={styles.aboutIcon}
@@ -364,7 +364,7 @@ class MenuBar extends React.Component {
                     place={this.props.isRtl ? 'right' : 'left'}
                     onRequestClose={this.props.onRequestCloseAbout}
                 >
-                    {onClickAbout.map((itemProps) => (
+                    {onClickAbout.map(itemProps => (
                         <MenuItem
                             key={itemProps.title}
                             isRtl={this.props.isRtl}
@@ -589,7 +589,7 @@ class MenuBar extends React.Component {
                                 <DeletionRestorer>
                                     {(
                                         handleRestore,
-                                        { restorable, deletedItem }
+                                        {restorable, deletedItem}
                                     ) => (
                                         <MenuItem
                                             className={classNames({
@@ -607,7 +607,7 @@ class MenuBar extends React.Component {
                                 </DeletionRestorer>
                                 <MenuSection>
                                     <TurboMode>
-                                        {(toggleTurboMode, { turboMode }) => (
+                                        {(toggleTurboMode, {turboMode}) => (
                                             <MenuItem onClick={toggleTurboMode}>
                                                 {turboMode ? (
                                                     <FormattedMessage
@@ -726,7 +726,7 @@ class MenuBar extends React.Component {
                                 <ProjectWatcher
                                     onDoneUpdating={this.props.onSeeCommunity}
                                 >
-                                    {(waitForUpdate) => (
+                                    {waitForUpdate => (
                                         <ShareButton
                                             className={styles.menuBarButton}
                                             isShared={this.props.isShared}
@@ -762,7 +762,7 @@ class MenuBar extends React.Component {
                                 <ProjectWatcher
                                     onDoneUpdating={this.props.onSeeCommunity}
                                 >
-                                    {(waitForUpdate) => (
+                                    {waitForUpdate => (
                                         <CommunityButton
                                             className={styles.menuBarButton}
                                             /* eslint-disable react/jsx-no-bind */
@@ -1058,7 +1058,7 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
     autoUpdateProject: () => dispatch(autoUpdateProject()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
     onClickAccount: () => dispatch(openAccountMenu()),
@@ -1075,12 +1075,12 @@ const mapDispatchToProps = (dispatch) => ({
     onRequestCloseAbout: () => dispatch(closeAboutMenu()),
     onClickSettings: () => dispatch(openSettingsMenu()),
     onRequestCloseSettings: () => dispatch(closeSettingsMenu()),
-    onClickNew: (needSave) => dispatch(requestNewProject(needSave)),
+    onClickNew: needSave => dispatch(requestNewProject(needSave)),
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),
     onClickSaveAsCopy: () => dispatch(saveProjectAsCopy()),
     onSeeCommunity: () => dispatch(setPlayer(true)),
-    onSetTimeTravelMode: (mode) => dispatch(setTimeTravel(mode))
+    onSetTimeTravelMode: mode => dispatch(setTimeTravel(mode))
 });
 
 export default compose(

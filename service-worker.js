@@ -4108,10 +4108,10 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "9eb596ac545a2a21e7f03b47d6bd1c70"
   }, {
     "url": "lib.min.js",
-    "revision": "0beb8aa1b38632fd8f3ae2a4ac94c88e"
+    "revision": "67259f4a53a975f070d650baddd110fc"
   }, {
     "url": "lib.min.js.map",
-    "revision": "e26afbd01f0ad47f6cd5113489c3f3ad"
+    "revision": "9e64dc1851db279d66cbe8ab7e5b5d01"
   }, {
     "url": "player.html",
     "revision": "8613e4c36a8f732f5c4c4c57ea08fc15"
@@ -4135,9 +4135,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/1900166faa9222d0d10c568a12c848a5.png",
-    "revision": null
-  }, {
-    "url": "static/assets/221d361feda571484db66eef8496721b.png",
     "revision": null
   }, {
     "url": "static/assets/223d68e7b8769bac1f33291514ce5bac.svg",
@@ -4288,6 +4285,9 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "static/assets/7efe82fffae735cd083388badd51b3fa.svg",
+    "revision": null
+  }, {
+    "url": "static/assets/7fb9e2c62275f3fc3cedca4089f43e62.svg",
     "revision": null
   }, {
     "url": "static/assets/82072226e8cf716289165650c31eeda2.svg",

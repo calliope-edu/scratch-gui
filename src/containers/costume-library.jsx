@@ -16,15 +16,12 @@ const messages = defineMessages({
     }
 });
 
-
 class CostumeLibrary extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
-        bindAll(this, [
-            'handleItemSelected'
-        ]);
+        bindAll(this, ['handleItemSelected']);
     }
-    handleItemSelected (item) {
+    handleItemSelected(item) {
         const vmCostume = {
             name: item.name,
             rotationCenterX: item.rotationCenterX,
@@ -34,7 +31,7 @@ class CostumeLibrary extends React.PureComponent {
         };
         this.props.vm.addCostumeFromLibrary(item.md5ext, vmCostume);
     }
-    render () {
+    render() {
         return (
             <LibraryComponent
                 data={costumeLibraryContent}

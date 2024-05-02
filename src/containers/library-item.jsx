@@ -6,7 +6,7 @@ import {injectIntl} from 'react-intl';
 import LibraryItemComponent from '../components/library-item/library-item.jsx';
 
 class LibraryItem extends React.PureComponent {
-    constructor (props) {
+    constructor(props) {
         super(props);
         bindAll(this, [
             'handleBlur',
@@ -26,88 +26,106 @@ class LibraryItem extends React.PureComponent {
             isRotatingIcon: false
         };
     }
-    componentWillUnmount () {
+    componentWillUnmount() {
         clearInterval(this.intervalId);
     }
-    handleBlur (id) {
+    handleBlur(id) {
         this.handleMouseLeave(id);
     }
-    handleClick (e) {
+    handleClick(e) {
         if (!this.props.disabled) {
             this.props.onSelect(this.props.id);
         }
         e.preventDefault();
     }
-    handleFocus (id) {
+    handleFocus(id) {
         if (!this.props.showPlayButton) {
             this.handleMouseEnter(id);
         }
     }
-    handleKeyPress (e) {
+    handleKeyPress(e) {
         if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             this.props.onSelect(this.props.id);
         }
     }
-    handleMouseEnter () {
+    handleMouseEnter() {
         // only show hover effects on the item if not showing a play button
         if (!this.props.showPlayButton) {
             this.props.onMouseEnter(this.props.id);
             if (this.props.icons && this.props.icons.length) {
                 this.stopRotatingIcons();
-                this.setState({
-                    isRotatingIcon: true
-                }, this.startRotatingIcons);
+                this.setState(
+                    {
+                        isRotatingIcon: true
+                    },
+                    this.startRotatingIcons
+                );
             }
         }
     }
-    handleMouseLeave () {
+    handleMouseLeave() {
         // only show hover effects on the item if not showing a play button
         if (!this.props.showPlayButton) {
             this.props.onMouseLeave(this.props.id);
             if (this.props.icons && this.props.icons.length) {
-                this.setState({
-                    isRotatingIcon: false
-                }, this.stopRotatingIcons);
+                this.setState(
+                    {
+                        isRotatingIcon: false
+                    },
+                    this.stopRotatingIcons
+                );
             }
         }
     }
-    handlePlay () {
+    handlePlay() {
         this.props.onMouseEnter(this.props.id);
     }
-    handleStop () {
+    handleStop() {
         this.props.onMouseLeave(this.props.id);
     }
-    startRotatingIcons () {
+    startRotatingIcons() {
         this.rotateIcon();
         this.intervalId = setInterval(this.rotateIcon, 300);
     }
-    stopRotatingIcons () {
+    stopRotatingIcons() {
         if (this.intervalId) {
             this.intervalId = clearInterval(this.intervalId);
         }
     }
-    rotateIcon () {
-        const nextIconIndex = (this.state.iconIndex + 1) % this.props.icons.length;
+    rotateIcon() {
+        const nextIconIndex =
+            (this.state.iconIndex + 1) % this.props.icons.length;
         this.setState({iconIndex: nextIconIndex});
     }
-    curIconMd5 () {
+    curIconMd5() {
         const iconMd5Prop = this.props.iconMd5;
-        if (this.props.icons &&
+        if (
+            this.props.icons &&
             this.state.isRotatingIcon &&
-            this.state.iconIndex < this.props.icons.length) {
+            this.state.iconIndex < this.props.icons.length
+        ) {
             const icon = this.props.icons[this.state.iconIndex] || {};
-            return icon.md5ext || // 3.0 library format
+
+            if (icon.rawUrl) {
+                return icon.rawUrl;
+            }
+
+            const iconMd5 =
+                icon.md5ext || // 3.0 library format
                 icon.baseLayerMD5 || // 2.0 library format, TODO GH-5084
-                iconMd5Prop;
+                this.props.iconMd5;
+
+            return `https://assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/`;
         }
-        return iconMd5Prop;
+
+        return this.props.iconMd5
+            ? `https://assets.scratch.mit.edu/internalapi/asset/${iconMd5Prop}/get/`
+            : this.props.iconRawURL;
     }
-    render () {
+    render() {
         const iconMd5 = this.curIconMd5();
-        const iconURL = iconMd5 ?
-            `https://assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/` :
-            this.props.iconRawURL;
+        const iconURL = iconMd5 || this.props.iconRawURL;
         return (
             <LibraryItemComponent
                 bluetoothRequired={this.props.bluetoothRequired}
@@ -123,7 +141,9 @@ class LibraryItem extends React.PureComponent {
                 icons={this.props.icons}
                 id={this.props.id}
                 insetIconURL={this.props.insetIconURL}
-                internetConnectionRequired={this.props.internetConnectionRequired}
+                internetConnectionRequired={
+                    this.props.internetConnectionRequired
+                }
                 isPlaying={this.props.isPlaying}
                 name={this.props.name}
                 showPlayButton={this.props.showPlayButton}
@@ -143,10 +163,7 @@ class LibraryItem extends React.PureComponent {
 LibraryItem.propTypes = {
     bluetoothRequired: PropTypes.bool,
     collaborator: PropTypes.string,
-    description: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.node
-    ]),
+    description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     disabled: PropTypes.bool,
     extensionId: PropTypes.string,
     extensionURL: PropTypes.string,
@@ -165,10 +182,7 @@ LibraryItem.propTypes = {
     insetIconURL: PropTypes.string,
     internetConnectionRequired: PropTypes.bool,
     isPlaying: PropTypes.bool,
-    name: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.node
-    ]),
+    name: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     onMouseEnter: PropTypes.func.isRequired,
     onMouseLeave: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,

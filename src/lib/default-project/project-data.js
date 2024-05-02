@@ -51,18 +51,46 @@ const projectData = translateFunction => {
                         rotationCenterY: 180
                     }
                 ],
-                sounds: [
+                sounds: [],
+                volume: 100
+            },
+            {
+                isStage: false,
+                name: translator(messages.sprite, {index: 1}),
+                variables: {},
+                lists: {},
+                broadcasts: {},
+                blocks: {},
+                currentCostume: 0,
+                costumes: [
                     {
-                        assetId: '83a9787d4cb6f3b7632b4ddfebf74367',
-                        name: translator(messages.pop),
-                        dataFormat: 'wav',
-                        format: '',
-                        rate: 11025,
-                        sampleCount: 258,
-                        md5ext: '83a9787d4cb6f3b7632b4ddfebf74367.wav'
+                        assetId: '2a9fee6a9b1f71c86564321a56488b37',
+                        name: translator(messages.costume, {index: 1}),
+                        bitmapResolution: 1,
+                        md5ext: '2a9fee6a9b1f71c86564321a56488b37.svg',
+                        dataFormat: 'svg',
+                        rotationCenterX: 150,
+                        rotationCenterY: 150
+                    },
+                    {
+                        assetId: '5ce59286cfbeb990c420416fb9cb799c',
+                        name: translator(messages.costume, {index: 2}),
+                        bitmapResolution: 1,
+                        md5ext: '5ce59286cfbeb990c420416fb9cb799c.svg',
+                        dataFormat: 'svg',
+                        rotationCenterX: 150,
+                        rotationCenterY: 150
                     }
                 ],
-                volume: 100
+                sounds: [],
+                volume: 100,
+                visible: true,
+                x: 0,
+                y: 0,
+                size: 100,
+                direction: 90,
+                draggable: false,
+                rotationStyle: 'all around'
             }
         ],
         meta: {

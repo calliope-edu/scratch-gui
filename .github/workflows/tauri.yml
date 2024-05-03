@@ -1,0 +1,109 @@
+name: Publish static releases
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name: checkout gui
+          uses: actions/checkout@v3
+          with:
+              ref: 'calliope'
+              fetch-depth: 0
+        - run: npm install
+        - run: npm update scratch-vm
+        - run: npm run build
+
+        - name: Update Tauri version in tauri.conf.json
+          run: |
+            # Extract semver version (remove leading v and limit to 3 version numbers)
+            VERSION=$(echo "${{ github.ref_name }}" | sed 's/v//; s/^\([0-9]\+\.[0-9]\+\.[0-9]\+\).*$/\1/')
+
+            # Update tauri.conf.json with the new version
+            sed -i "s#\"version\": \".*\"#\"version\": \"$VERSION\"#g" src-tauri/tauri.conf.json
+
+        - name: share files with release job
+          uses: actions/upload-artifact@v4
+          with:
+            name: files
+            path: |
+              src-tauri/
+              build/
+              package.json
+              package-lock.json
+            retention-days: 1
+
+         
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-20.04
+  #   permissions:
+  #     contents: read
+  #     deployments: write
+  #   name: Deploy to Cloudflare Pages
+  #   steps:
+      
+  #     - name: Download all workflow run artifacts
+  #       uses: actions/download-artifact@v4
+
+  #     - name: Install wrangler
+  #       run: |
+  #         npm install wrangler --save-dev
+
+  #     - name: Publish
+  #       uses: cloudflare/pages-action@1
+  #       with:
+  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #         projectName: pxt-calliope 
+  #         directory: files/built/packaged
+  #         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    needs: build
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-20.04, windows-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-20.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+        with:
+          tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
+          releaseName: 'Calliope mini Blocks v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: 'See the assets to download and install this version.'
+          releaseDraft: false
+          prerelease: false
+          includeUpdaterJson: true

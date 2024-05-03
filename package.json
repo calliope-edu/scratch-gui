@@ -27,7 +27,8 @@
         "test:lint": "eslint . --ext .js,.jsx",
         "test:unit": "jest test[\\\\/]unit",
         "test:smoke": "jest --runInBand test[\\\\/]smoke",
-        "watch": "webpack --colors --watch"
+        "watch": "webpack --colors --watch",
+        "tauri": "tauri"
     },
     "config": {
         "commitizen": {
@@ -117,6 +118,7 @@
         "@babel/preset-react": "7.14.5",
         "@commitlint/cli": "17.8.1",
         "@commitlint/config-conventional": "17.8.1",
+        "@tauri-apps/cli": "^1.5.12",
         "babel-core": "7.0.0-bridge.0",
         "babel-eslint": "10.1.0",
         "babel-loader": "8.3.0",

@@ -4108,10 +4108,10 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "9eb596ac545a2a21e7f03b47d6bd1c70"
   }, {
     "url": "lib.min.js",
-    "revision": "4129aeb87b67f237dd5817e1cd936ba2"
+    "revision": "54c7eb4a74e00056b7dd29e5d509bcdd"
   }, {
     "url": "lib.min.js.map",
-    "revision": "520686a470de95da2b1e04b72ff14914"
+    "revision": "73742bb59bc915b2e16c36ffa6924972"
   }, {
     "url": "player.html",
     "revision": "8613e4c36a8f732f5c4c4c57ea08fc15"
@@ -4347,9 +4347,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/a11919e102077f40302da55fb9150440.svg",
     "revision": null
   }, {
-    "url": "static/assets/a16a180f2f5e01058ea286a6cd578504.svg",
-    "revision": null
-  }, {
     "url": "static/assets/a3e2db68a0243f03e75104ffd9d70972.jpg",
     "revision": null
   }, {
@@ -4419,9 +4416,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/c50860fc8c66731a66ce368e14283b75.jpg",
     "revision": null
   }, {
-    "url": "static/assets/c8ee3cfa7cec1af247a4a1e4dc6785f6.svg",
-    "revision": null
-  }, {
     "url": "static/assets/ccffa5bb71a2219a2c0d91121edb46ea.svg",
     "revision": null
   }, {
@@ -4461,9 +4455,6 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/e4dfc45f34b4606356c4c70ba14a96f0.svg",
     "revision": null
   }, {
-    "url": "static/assets/e5ef7178b75510cf3e3b2f9ff7012edb.svg",
-    "revision": null
-  }, {
     "url": "static/assets/e6e16daaf665399c8826497dfb888260.svg",
     "revision": null
   }, {
@@ -4485,13 +4476,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "url": "static/assets/ed3fe9e11706e76990709ac2e567ada6.svg",
     "revision": null
   }, {
-    "url": "static/assets/ed57f1dfa48f036c4457b1f021bd7a02.svg",
-    "revision": null
-  }, {
     "url": "static/assets/ef4a998a82a8567de018baa4607bc6a0.svg",
-    "revision": null
-  }, {
-    "url": "static/assets/f172c4deaab965d3b5193599e07d0928.svg",
     "revision": null
   }, {
     "url": "static/assets/f6d9f33ec366a89a58b3cf0e125adf97.svg",

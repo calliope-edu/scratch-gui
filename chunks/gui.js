@@ -135,9 +135,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
 
-var onClickLogo = function onClickLogo() {
-  window.location = 'https://scratch.mit.edu';
-};
 var handleTelemetryModalCancel = function handleTelemetryModalCancel() {
   Object(_lib_log_js__WEBPACK_IMPORTED_MODULE_6__["default"])('User canceled telemetry modal');
 };
@@ -192,8 +189,7 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
     backpackVisible: true,
     showComingSoon: false,
     backpackHost: backpackHost,
-    canSave: false,
-    onClickLogo: onClickLogo
+    canSave: false
   }), appTarget);
 });
 

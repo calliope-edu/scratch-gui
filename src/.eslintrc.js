@@ -21,6 +21,7 @@ module.exports = {
         'import/no-amd': 'error',
         'import/no-nodejs-modules': 'error',
         'react/jsx-no-literals': 'error',
+        'react/jsx-max-props-per-line': 'off',
         'no-confusing-arrow': [
             'error',
             {

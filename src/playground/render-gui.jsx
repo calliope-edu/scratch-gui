@@ -7,10 +7,6 @@ import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 
-const onClickLogo = () => {
-    window.location = 'https://scratch.mit.edu';
-};
-
 const handleTelemetryModalCancel = () => {
     log('User canceled telemetry modal');
 };
@@ -34,16 +30,19 @@ export default appTarget => {
     // note that redux's 'compose' function is just being used as a general utility to make
     // the hierarchy of HOC constructor calls clearer here; it has nothing to do with redux's
     // ability to compose reducers.
-    const WrappedGui = compose(
-        AppStateHOC,
-        HashParserHOC
-    )(GUI);
+    const WrappedGui = compose(AppStateHOC, HashParserHOC)(GUI);
 
     // TODO a hack for testing the backpack, allow backpack host to be set by url param
-    const backpackHostMatches = window.location.href.match(/[?&]backpack_host=([^&]*)&?/);
-    const backpackHost = backpackHostMatches ? backpackHostMatches[1] : 'localStorage';
+    const backpackHostMatches = window.location.href.match(
+        /[?&]backpack_host=([^&]*)&?/
+    );
+    const backpackHost = backpackHostMatches
+        ? backpackHostMatches[1]
+        : 'localStorage';
 
-    const scratchDesktopMatches = window.location.href.match(/[?&]isScratchDesktop=([^&]+)/);
+    const scratchDesktopMatches = window.location.href.match(
+        /[?&]isScratchDesktop=([^&]+)/
+    );
     let simulateScratchDesktop;
     if (scratchDesktopMatches) {
         try {
@@ -63,7 +62,7 @@ export default appTarget => {
 
     ReactDOM.render(
         // important: this is checking whether `simulateScratchDesktop` is truthy, not just defined!
-        simulateScratchDesktop ?
+        simulateScratchDesktop ? (
             <WrappedGui
                 canEditTitle
                 isScratchDesktop
@@ -72,14 +71,16 @@ export default appTarget => {
                 onTelemetryModalCancel={handleTelemetryModalCancel}
                 onTelemetryModalOptIn={handleTelemetryModalOptIn}
                 onTelemetryModalOptOut={handleTelemetryModalOptOut}
-            /> :
+            />
+        ) : (
             <WrappedGui
                 canEditTitle
                 backpackVisible
                 showComingSoon={false}
                 backpackHost={backpackHost}
                 canSave={false}
-                onClickLogo={onClickLogo}
-            />,
-        appTarget);
+            />
+        ),
+        appTarget
+    );
 };

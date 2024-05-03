@@ -2,8 +2,8 @@ import projectData from './project-data';
 
 /* eslint-disable import/no-unresolved */
 import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
-import costume1 from '!raw-loader!./af5b4ee04f18feedd3729336a0640ef4.svg';
-import costume2 from '!raw-loader!./2a9fee6a9b1f71c86564321a56488b37.svg';
+import costume1 from '!raw-loader!./aa3085ccc742c84f5f99c2fd150fb596.svg';
+import costume2 from '!raw-loader!./af5b4ee04f18feedd3729336a0640ef4.svg';
 
 /* eslint-enable import/no-unresolved */
 
@@ -32,13 +32,13 @@ const defaultProject = translator => {
             data: encoder.encode(backdrop)
         },
         {
-            id: 'af5b4ee04f18feedd3729336a0640ef4',
+            id: 'aa3085ccc742c84f5f99c2fd150fb596',
             assetType: 'ImageVector',
             dataFormat: 'SVG',
             data: encoder.encode(costume1)
         },
         {
-            id: '2a9fee6a9b1f71c86564321a56488b37',
+            id: 'af5b4ee04f18feedd3729336a0640ef4',
             assetType: 'ImageVector',
             dataFormat: 'SVG',
             data: encoder.encode(costume2)

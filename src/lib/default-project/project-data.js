@@ -64,19 +64,19 @@ const projectData = translateFunction => {
                 currentCostume: 0,
                 costumes: [
                     {
-                        assetId: '2a9fee6a9b1f71c86564321a56488b37',
+                        assetId: 'aa3085ccc742c84f5f99c2fd150fb596',
                         name: translator(messages.costume, {index: 1}),
                         bitmapResolution: 1,
-                        md5ext: '2a9fee6a9b1f71c86564321a56488b37.svg',
+                        md5ext: 'aa3085ccc742c84f5f99c2fd150fb596.svg',
                         dataFormat: 'svg',
                         rotationCenterX: 150,
                         rotationCenterY: 150
                     },
                     {
-                        assetId: '5ce59286cfbeb990c420416fb9cb799c',
+                        assetId: 'af5b4ee04f18feedd3729336a0640ef4',
                         name: translator(messages.costume, {index: 2}),
                         bitmapResolution: 1,
-                        md5ext: '5ce59286cfbeb990c420416fb9cb799c.svg',
+                        md5ext: 'af5b4ee04f18feedd3729336a0640ef4.svg',
                         dataFormat: 'svg',
                         rotationCenterX: 150,
                         rotationCenterY: 150

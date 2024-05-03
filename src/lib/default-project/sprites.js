@@ -1,5 +1,5 @@
-import sprite1 from './af5b4ee04f18feedd3729336a0640ef4.svg';
-import sprite2 from './2a9fee6a9b1f71c86564321a56488b37.svg';
+import sprite1 from './aa3085ccc742c84f5f99c2fd150fb596.svg';
+import sprite2 from './af5b4ee04f18feedd3729336a0640ef4.svg';
 
 export default [
     {
@@ -9,8 +9,8 @@ export default [
         variables: {},
         costumes: [
             {
-                assetId: 'af5b4ee04f18feedd3729336a0640ef4',
-                name: 'calliope-f',
+                assetId: 'aa3085ccc742c84f5f99c2fd150fb596',
+                name: 'calliope-a',
                 bitmapResolution: 1,
                 rawUrl: sprite1,
                 dataFormat: 'svg',
@@ -18,8 +18,8 @@ export default [
                 rotationCenterY: 150
             },
             {
-                assetId: '2a9fee6a9b1f71c86564321a56488b37',
-                name: 'calliope-a',
+                assetId: 'af5b4ee04f18feedd3729336a0640ef4',
+                name: 'calliope-b',
                 bitmapResolution: 1,
                 rawUrl: sprite2,
                 dataFormat: 'svg',

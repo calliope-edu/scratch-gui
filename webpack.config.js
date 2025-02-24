@@ -114,28 +114,11 @@ const base = {
         ]
     },
     optimization: {
-        splitChunks: {
-            chunks: 'all',
-            minSize: 30000,
-            maxSize: 100000,
-            minChunks: 1,
-            maxAsyncRequests: 5,
-            maxInitialRequests: 5,
-            automaticNameDelimiter: '~',
-            cacheGroups: {
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10,
-                    reuseExistingChunk: true
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
-        },
-        runtimeChunk: 'single'
+        minimizer: [
+            new UglifyJsPlugin({
+                include: /\.min\.js$/
+            })
+        ]
     },
     plugins: [
         new CopyWebpackPlugin({
@@ -316,15 +299,6 @@ module.exports = [
                           }
                       }
                   ])
-              },
-              optimization: {
-                  splitChunks: {
-                      chunks: 'all',
-                      name: 'lib.min'
-                  },
-                  runtimeChunk: {
-                      name: 'lib.min'
-                  }
               },
               plugins: base.plugins.concat([
                   new CopyWebpackPlugin({

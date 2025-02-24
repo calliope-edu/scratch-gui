@@ -176,24 +176,7 @@ module.exports = [
             splitChunks: {
                 chunks: 'all',
                 name: 'lib.min',
-                minSize: 9 * 1024 * 1024, // 9 MB
-                maxSize: Infinity,
-                minChunks: 1,
-                maxAsyncRequests: 5,
-                maxInitialRequests: 3,
-                automaticNameDelimiter: '~',
-                cacheGroups: {
-                    vendors: {
-                        test: /[\\/]node_modules[\\/]/,
-                        priority: -10,
-                        reuseExistingChunk: true
-                    },
-                    default: {
-                        minChunks: 2,
-                        priority: -20,
-                        reuseExistingChunk: true
-                    }
-                }
+                minSize: 25 * 1024 * 1024, // 9 MB
             },
             runtimeChunk: {
                 name: 'lib.min'
@@ -322,24 +305,7 @@ module.exports = [
                 splitChunks: {
                     chunks: 'all',
                     name: 'lib.min',
-                    minSize: 9 * 1024 * 1024, // 9 MB
-                    maxSize: Infinity,
-                    minChunks: 1,
-                    maxAsyncRequests: 5,
-                    maxInitialRequests: 3,
-                    automaticNameDelimiter: '~',
-                    cacheGroups: {
-                        vendors: {
-                            test: /[\\/]node_modules[\\/]/,
-                            priority: -10,
-                            reuseExistingChunk: true
-                        },
-                        default: {
-                            minChunks: 2,
-                            priority: -20,
-                            reuseExistingChunk: true
-                        }
-                    }
+                    minSize: 25 * 1024 * 1024, // 9 MB
                 },
                 runtimeChunk: {
                     name: 'lib.min'

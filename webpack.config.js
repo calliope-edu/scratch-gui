@@ -176,7 +176,7 @@ module.exports = [
             splitChunks: {
                 chunks: 'all',
                 name: 'lib.min',
-                minSize: 25 * 1024 * 1024, // 9 MB
+                minSize: 20 * 1024 * 1024,
             },
             runtimeChunk: {
                 name: 'lib.min'
@@ -305,7 +305,7 @@ module.exports = [
                 splitChunks: {
                     chunks: 'all',
                     name: 'lib.min',
-                    minSize: 25 * 1024 * 1024, // 9 MB
+                    minSize: 20 * 1024 * 1024,
                 },
                 runtimeChunk: {
                     name: 'lib.min'

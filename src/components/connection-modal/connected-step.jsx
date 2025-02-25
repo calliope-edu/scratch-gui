@@ -49,7 +49,7 @@ const ConnectedStep = props => (
                     />
                 </button>
                 <button
-                    className={styles.connectionButton}
+                    className={classNames(styles.greenButton, styles.connectionButton)}
                     onClick={props.onCancel}
                 >
                     <FormattedMessage

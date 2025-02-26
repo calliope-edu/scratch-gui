@@ -32,9 +32,9 @@ $control-primary: hsla(38, 100%, 55%, 1); /* #FFAB19 */
 
 $data-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A */
 
-$pen-primary: hsla(125, 45%, 560%, 1); /* #69C46F */
+$pen-primary: hsla(125, 45%, 60%, 1); /* #69C46F */
 $pen-transparent: hsla(125, 45%, 60%, 0.25); /* #69C46F */
-$pen-tertiary: hslahsl(166. 100% 33%, 1); /* #00AA85 */
+$pen-tertiary: hsla(166, 100%, 33%, 1); /* #00AA85 */
 
 $error-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A */
 $error-light: hsla(30, 100%, 70%, 1); /* #FFB366 */

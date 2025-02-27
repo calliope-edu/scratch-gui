@@ -357,6 +357,10 @@
     background: $red-primary;
 }
 
+.green-button {
+    background: $pen-primary;
+}
+
 .corner-buttons {
     display: flex;
     justify-content: space-between;

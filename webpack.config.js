@@ -175,7 +175,8 @@ module.exports = [
         optimization: {
             splitChunks: {
                 chunks: 'all',
-                name: 'lib.min'
+                name: 'lib.min',
+                minSize: 20 * 1024 * 1024,
             },
             runtimeChunk: {
                 name: 'lib.min'
@@ -300,6 +301,16 @@ module.exports = [
                       }
                   ])
               },
+              optimization: {
+                splitChunks: {
+                    chunks: 'all',
+                    name: 'lib.min',
+                    minSize: 20 * 1024 * 1024,
+                },
+                runtimeChunk: {
+                    name: 'lib.min'
+                }
+            },
               plugins: base.plugins.concat([
                   new CopyWebpackPlugin({
                       patterns: [

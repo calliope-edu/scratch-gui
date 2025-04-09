@@ -21,25 +21,26 @@ const ConnectedStep = props => (
                         className={styles.bluetoothConnectedIcon}
                         src={bluetoothIcon}
                     />
+                    <FormattedMessage
+                        defaultMessage="Connected"
+                        description="Message indicating that a device was connected"
+                        id="gui.connection.connected"
+                    />
                 </div>
             </Box>
         </Box>
         <Box className={styles.bottomArea}>
-            <Box className={classNames(styles.bottomAreaItem, styles.instructions)}>
-                <FormattedMessage
-                    defaultMessage="Connected"
-                    description="Message indicating that a device was connected"
-                    id="gui.connection.connected"
-                />
-            </Box>
-            <Dots
-                success
-                className={styles.bottomAreaItem}
-                total={3}
-            />
-            <div className={classNames(styles.bottomAreaItem, styles.cornerButtons)}>
+            <div
+                className={classNames(
+                    styles.bottomAreaItem,
+                    styles.cornerButtons
+                )}
+            >
                 <button
-                    className={classNames(styles.redButton, styles.connectionButton)}
+                    className={classNames(
+                        styles.redButton,
+                        styles.connectionButton
+                    )}
                     onClick={props.onDisconnect}
                 >
                     <FormattedMessage
@@ -49,7 +50,10 @@ const ConnectedStep = props => (
                     />
                 </button>
                 <button
-                    className={classNames(styles.greenButton, styles.connectionButton)}
+                    className={classNames(
+                        styles.greenButton,
+                        styles.connectionButton
+                    )}
                     onClick={props.onCancel}
                 >
                     <FormattedMessage

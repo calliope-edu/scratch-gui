@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import React from 'react';
 
 import Box from '../box/box.jsx';
-import Dots from './dots.jsx';
 import helpIcon from './icons/help.svg';
 import backIcon from './icons/back.svg';
 
@@ -19,23 +18,18 @@ const ErrorStep = props => (
                         className={styles.peripheralActivityIcon}
                         src={props.connectionIconURL}
                     />
+                    <div>
+                        <FormattedMessage
+                            defaultMessage="Oops, looks like something went wrong."
+                            description="The device connection process has encountered an error."
+                            id="gui.connection.error.errorMessage"
+                        />
+                    </div>
                 </div>
             </Box>
         </Box>
+
         <Box className={styles.bottomArea}>
-            <div
-                className={classNames(
-                    styles.bottomAreaItem,
-                    styles.instructions
-                )}
-            >
-                <FormattedMessage
-                    defaultMessage="Oops, looks like something went wrong."
-                    description="The device connection process has encountered an error."
-                    id="gui.connection.error.errorMessage"
-                />
-            </div>
-            <Dots error className={styles.bottomAreaItem} total={3} />
             <Box
                 className={classNames(styles.bottomAreaItem, styles.buttonRow)}
             >

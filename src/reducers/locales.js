@@ -11,29 +11,40 @@ const SELECT_LOCALE = 'scratch-gui/locales/SELECT_LOCALE';
 const initialState = {
     isRtl: false,
     locale: 'en',
-    messagesByLocale: editorMessages,
+    messagesByLocale: {
+        ...editorMessages,
+        de: {
+            ...editorMessages.de,
+            'gui.alerts.lostPeripheralConnection':
+                'Scratch hat keine Verbindung zu {extensionName}.',
+            'gui.connection.unavailable.calliopeBlockFile':
+                'Du benötigst den <a href="{link}">Blocks-Hex-File</a> auf deinem Calliope mini.',
+            'gui.connection.unavailable.chromeBrowser':
+                'Überprüfe, ob du einen Chrome-basierten Browser verwendest.'
+        }
+    },
     messages: editorMessages.en
 };
 
 const reducer = function (state, action) {
     if (typeof state === 'undefined') state = initialState;
     switch (action.type) {
-    case SELECT_LOCALE:
-        return Object.assign({}, state, {
-            isRtl: isRtl(action.locale),
-            locale: action.locale,
-            messagesByLocale: state.messagesByLocale,
-            messages: state.messagesByLocale[action.locale]
-        });
-    case UPDATE_LOCALES:
-        return Object.assign({}, state, {
-            isRtl: state.isRtl,
-            locale: state.locale,
-            messagesByLocale: action.messagesByLocale,
-            messages: action.messagesByLocale[state.locale]
-        });
-    default:
-        return state;
+        case SELECT_LOCALE:
+            return Object.assign({}, state, {
+                isRtl: isRtl(action.locale),
+                locale: action.locale,
+                messagesByLocale: state.messagesByLocale,
+                messages: state.messagesByLocale[action.locale]
+            });
+        case UPDATE_LOCALES:
+            return Object.assign({}, state, {
+                isRtl: state.isRtl,
+                locale: state.locale,
+                messagesByLocale: action.messagesByLocale,
+                messages: action.messagesByLocale[state.locale]
+            });
+        default:
+            return state;
     }
 };
 
@@ -52,16 +63,12 @@ const setLocales = function (localesMessages) {
 };
 const initLocale = function (currentState, locale) {
     if (currentState.messagesByLocale.hasOwnProperty(locale)) {
-        return Object.assign(
-            {},
-            currentState,
-            {
-                isRtl: isRtl(locale),
-                locale: locale,
-                messagesByLocale: currentState.messagesByLocale,
-                messages: currentState.messagesByLocale[locale]
-            }
-        );
+        return Object.assign({}, currentState, {
+            isRtl: isRtl(locale),
+            locale: locale,
+            messagesByLocale: currentState.messagesByLocale,
+            messages: currentState.messagesByLocale[locale]
+        });
     }
     // don't change locale if it's not in the current messages
     return currentState;

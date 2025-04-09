@@ -164,11 +164,12 @@
 
 .peripheral-activity {
     position: relative;
+    text-align: center;
 }
 
 .peripheral-activity-icon {
-    /* width: 80px;
-    height: 80px; */
+    width: 80px;
+    height: 80px;
 }
 
 .connection-tip-icon {

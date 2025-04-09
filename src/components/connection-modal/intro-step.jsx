@@ -17,7 +17,7 @@ const UnavailableStep = props => (
                     <div className={styles.helpStepNumber}>{'1'}</div>
                     <div className={styles.helpStepText}>
                         <FormattedHTMLMessage
-                            defaultMessage="You need the <a href='{link}'>block hex file</a> on your Calliope mini."
+                            defaultMessage="You need the <a href='{link}'>Blocks-Hex-File</a> on your Calliope mini."
                             description="Message for getting the block hex file on your Calliope mini"
                             id="gui.connection.unavailable.calliopeBlockFile"
                             values={{
@@ -31,7 +31,7 @@ const UnavailableStep = props => (
                     <div className={styles.helpStepText}>
                         <FormattedMessage
                             defaultMessage="Check that Bluetooth is enabled"
-                            description="Message for making sure Bluetooth is enabled"
+                            description="Message for making sure Bluetooth is enabled."
                             id="gui.connection.unavailable.enablebluetooth"
                         />
                     </div>
@@ -40,7 +40,7 @@ const UnavailableStep = props => (
                     <div className={styles.helpStepNumber}>{'3'}</div>
                     <div className={styles.helpStepText}>
                         <FormattedMessage
-                            defaultMessage="Check if you are using a Chrome-based browser (Chrome, Edge, Opera...)."
+                            defaultMessage="Check whether you are using a Chrome-based browser."
                             description="Message for making sure you are using a Chrome-based browser"
                             id="gui.connection.unavailable.chromeBrowser"
                         />

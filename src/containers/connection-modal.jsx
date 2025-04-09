@@ -60,8 +60,6 @@ class ConnectionModal extends React.Component {
     }
 
     handleConnect() {
-        console.log('handleConnect', this.props.extensionId);
-        console.log(this.props.vm);
         this.props.vm.scanForPeripheral(this.props.extensionId);
     }
 

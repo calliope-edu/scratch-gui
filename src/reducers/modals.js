@@ -21,23 +21,23 @@ const initialState = {
     [MODAL_SOUND_LIBRARY]: false,
     [MODAL_SPRITE_LIBRARY]: false,
     [MODAL_SOUND_RECORDER]: false,
-    [MODAL_CONNECTION]: false,
+    [MODAL_CONNECTION]: true,
     [MODAL_TIPS_LIBRARY]: false
 };
 
 const reducer = function (state, action) {
     if (typeof state === 'undefined') state = initialState;
     switch (action.type) {
-    case OPEN_MODAL:
-        return Object.assign({}, state, {
-            [action.modal]: true
-        });
-    case CLOSE_MODAL:
-        return Object.assign({}, state, {
-            [action.modal]: false
-        });
-    default:
-        return state;
+        case OPEN_MODAL:
+            return Object.assign({}, state, {
+                [action.modal]: true
+            });
+        case CLOSE_MODAL:
+            return Object.assign({}, state, {
+                [action.modal]: false
+            });
+        default:
+            return state;
     }
 };
 const openModal = function (modal) {

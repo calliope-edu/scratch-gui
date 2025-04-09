@@ -1,5 +1,5 @@
-@import "../../css/colors.css";
-@import "../../css/units.css";
+@import '../../css/colors.css';
+@import '../../css/units.css';
 
 .modal-content {
     width: 480px;
@@ -51,11 +51,11 @@
     align-items: center;
 }
 
-[dir="ltr"] .peripheral-tile-image {
+[dir='ltr'] .peripheral-tile-image {
     margin-right: 0.5rem;
 }
 
-[dir="rtl"] .peripheral-tile-image {
+[dir='rtl'] .peripheral-tile-image {
     margin-left: 0.5rem;
 }
 
@@ -95,24 +95,32 @@
     height: 16px;
 }
 
-[dir="ltr"] .signal-strength-meter {
+[dir='ltr'] .signal-strength-meter {
     margin-right: 1rem;
 }
 
-[dir="rtl"] .signal-strength-meter {
+[dir='rtl'] .signal-strength-meter {
     margin-left: 1rem;
 }
 
 .signal-bar {
     width: 4px;
     border-radius: 4px;
-    background-color: #DBDBDB;
+    background-color: #dbdbdb;
 }
 
-.signal-bar:nth-of-type(1) { height: 25%; }
-.signal-bar:nth-of-type(2) { height: 50%; }
-.signal-bar:nth-of-type(3) { height: 75%; }
-.signal-bar:nth-of-type(4) { height: 100%; }
+.signal-bar:nth-of-type(1) {
+    height: 25%;
+}
+.signal-bar:nth-of-type(2) {
+    height: 50%;
+}
+.signal-bar:nth-of-type(3) {
+    height: 75%;
+}
+.signal-bar:nth-of-type(4) {
+    height: 100%;
+}
 
 .green-bar {
     background-color: $pen-primary;
@@ -123,11 +131,11 @@
     height: 40px;
 }
 
-[dir="ltr"] .radar-small {
+[dir='ltr'] .radar-small {
     margin-right: 0.5rem;
 }
 
-[dir="rtl"] .radar-small {
+[dir='rtl'] .radar-small {
     margin-left: 0.5rem;
 }
 
@@ -140,12 +148,12 @@
     animation: spin 4s linear infinite;
 }
 
-[dir="ltr"] .radar {
-    margin-right: .5rem;
+[dir='ltr'] .radar {
+    margin-right: 0.5rem;
 }
 
-[dir="rtl"] .radar {
-    margin-left: .5rem;
+[dir='rtl'] .radar {
+    margin-left: 0.5rem;
 }
 
 @keyframes spin {
@@ -178,7 +186,6 @@
     box-shadow: 0px 0px 0px 4px $looks-transparent;
     /* animation: pulse-blue-ring 1s infinite ease-in-out alternate; */
     animation: wiggle 0.5s infinite ease-in-out alternate;
-
 }
 
 @keyframes pulse-blue-ring {
@@ -199,11 +206,21 @@
 }
 
 @keyframes wiggle {
-    0% {transform: rotate(3deg) scale(1.05);}
-    25% {transform: rotate(-3deg) scale(1.05);}
-    50% {transform: rotate(5deg) scale(1.05);}
-    75% {transform: rotate(-2deg) scale(1.05);}
-    100% {transform: rotate(0deg) scale(1.05);}
+    0% {
+        transform: rotate(3deg) scale(1.05);
+    }
+    25% {
+        transform: rotate(-3deg) scale(1.05);
+    }
+    50% {
+        transform: rotate(5deg) scale(1.05);
+    }
+    75% {
+        transform: rotate(-2deg) scale(1.05);
+    }
+    100% {
+        transform: rotate(0deg) scale(1.05);
+    }
 }
 
 .bluetooth-centered-icon {
@@ -225,7 +242,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: .5rem;
+    padding: 0.5rem;
 }
 
 .scratch-link-help {
@@ -233,8 +250,8 @@
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .scratch-link-help-step {
@@ -244,11 +261,16 @@
     align-items: center;
 }
 
-[dir="ltr"] .scratch-link-help-step {
+.help-step-text {
+    padding-top: 0.25em;
+    line-height: 1.3;
+}
+
+[dir='ltr'] .scratch-link-help-step {
     margin-left: 2.5rem;
 }
 
-[dir="rtl"] .scratch-link-help-step {
+[dir='rtl'] .scratch-link-help-step {
     margin-right: 2.5rem;
 }
 
@@ -260,11 +282,11 @@
     max-width: 40px;
 }
 
-[dir="ltr"] .help-step-image {
+[dir='ltr'] .help-step-image {
     margin-right: 0.5rem;
 }
 
-[dir="rtl"] .help-step-image {
+[dir='rtl'] .help-step-image {
     margin-left: 0.5rem;
 }
 
@@ -278,13 +300,14 @@
     font-weight: bold;
     min-width: 2rem;
     height: 2rem;
+    align-self: flex-start;
 }
 
-[dir="ltr"] .help-step-number {
+[dir='ltr'] .help-step-number {
     margin-right: 0.5rem;
 }
 
-[dir="rtl"] .help-step-number {
+[dir='rtl'] .help-step-number {
     margin-left: 0.5rem;
 }
 
@@ -333,23 +356,27 @@
     border-bottom-left-radius: 0;
 }
 
-[dir="ltr"] .button-icon-right {
+[dir='ltr'] .button-icon-right {
     margin-left: 0.5rem;
 }
-[dir="rtl"] .button-icon-right {
+[dir='rtl'] .button-icon-right {
     margin-right: 0.5rem;
 }
 
-[dir="ltr"] .button-icon-left {
+[dir='ltr'] .button-icon-left {
     margin-right: 0.5rem;
+    width: 20px;
+    height: 20px;
 }
 
-[dir="rtl"] .button-icon-left {
+[dir='rtl'] .button-icon-left {
     margin-left: 0.5rem;
+    width: 20px;
+    height: 20px;
 }
 
 /* reverse back arrow icon for RTL, don't reverse other connection icons */
-[dir="rtl"] .button-icon-back {
+[dir='rtl'] .button-icon-back {
     transform: scaleX(-1);
 }
 
@@ -369,18 +396,18 @@
 }
 
 .bottom-area {
-    background-color: $ui-white;
+    background-color: $looks-light-transparent;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 1rem;
-    padding-bottom: .75rem;
-    padding-left: .75rem;
-    padding-right: .75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
 }
 
-.bottom-area .bottom-area-item+.bottom-area-item {
+.bottom-area .bottom-area-item + .bottom-area-item {
     margin-top: 1rem;
 }
 
@@ -439,8 +466,8 @@
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     width: 90%;
 }
 

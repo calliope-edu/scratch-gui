@@ -5,11 +5,8 @@ import Box from '../box/box.jsx';
 import styles from './blocks.css';
 
 const BlocksComponent = props => {
-    const {
-        containerRef,
-        dragOver,
-        ...componentProps
-    } = props;
+    const {containerRef, dragOver, ...componentProps} = props;
+
     return (
         <Box
             className={classNames(styles.blocks, {

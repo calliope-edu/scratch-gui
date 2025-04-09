@@ -23,25 +23,31 @@ const ErrorStep = props => (
             </Box>
         </Box>
         <Box className={styles.bottomArea}>
-            <div className={classNames(styles.bottomAreaItem, styles.instructions)}>
+            <div
+                className={classNames(
+                    styles.bottomAreaItem,
+                    styles.instructions
+                )}
+            >
                 <FormattedMessage
                     defaultMessage="Oops, looks like something went wrong."
                     description="The device connection process has encountered an error."
                     id="gui.connection.error.errorMessage"
                 />
             </div>
-            <Dots
-                error
-                className={styles.bottomAreaItem}
-                total={3}
-            />
-            <Box className={classNames(styles.bottomAreaItem, styles.buttonRow)}>
+            <Dots error className={styles.bottomAreaItem} total={3} />
+            <Box
+                className={classNames(styles.bottomAreaItem, styles.buttonRow)}
+            >
                 <button
                     className={styles.connectionButton}
                     onClick={props.onScanning}
                 >
                     <img
-                        className={classNames(styles.buttonIconLeft, styles.buttonIconBack)}
+                        className={classNames(
+                            styles.buttonIconLeft,
+                            styles.buttonIconBack
+                        )}
                         src={backIcon}
                     />
                     <FormattedMessage
@@ -54,10 +60,7 @@ const ErrorStep = props => (
                     className={styles.connectionButton}
                     onClick={props.onHelp}
                 >
-                    <img
-                        className={styles.buttonIconLeft}
-                        src={helpIcon}
-                    />
+                    <img className={styles.buttonIconLeft} src={helpIcon} />
                     <FormattedMessage
                         defaultMessage="Help"
                         description="Button to view help content"

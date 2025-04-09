@@ -12,6 +12,7 @@ import ConnectedStep from './connected-step.jsx';
 import ErrorStep from './error-step.jsx';
 import UnavailableStep from './unavailable-step.jsx';
 import UpdatePeripheralStep from './update-peripheral-step.jsx';
+import IntroStep from './intro-step.jsx';
 
 import styles from './connection-modal.css';
 
@@ -21,7 +22,8 @@ const PHASES = keyMirror({
     connected: null,
     error: null,
     unavailable: null,
-    updatePeripheral: null
+    updatePeripheral: null,
+    intro: null
 });
 
 const ConnectionModalComponent = props => (
@@ -35,13 +37,22 @@ const ConnectionModalComponent = props => (
         onRequestClose={props.onCancel}
     >
         <Box className={styles.body}>
-            {props.phase === PHASES.scanning && !props.useAutoScan && <ScanningStep {...props} />}
-            {props.phase === PHASES.scanning && props.useAutoScan && <AutoScanningStep {...props} />}
+            {props.phase === PHASES.intro && <IntroStep {...props} />}
+            {props.phase === PHASES.scanning && !props.useAutoScan && (
+                <ScanningStep {...props} />
+            )}
+            {props.phase === PHASES.scanning && props.useAutoScan && (
+                <AutoScanningStep {...props} />
+            )}
             {props.phase === PHASES.connecting && <ConnectingStep {...props} />}
             {props.phase === PHASES.connected && <ConnectedStep {...props} />}
             {props.phase === PHASES.error && <ErrorStep {...props} />}
-            {props.phase === PHASES.unavailable && <UnavailableStep {...props} />}
-            {props.phase === PHASES.updatePeripheral && <UpdatePeripheralStep {...props} />}
+            {props.phase === PHASES.unavailable && (
+                <UnavailableStep {...props} />
+            )}
+            {props.phase === PHASES.updatePeripheral && (
+                <UpdatePeripheralStep {...props} />
+            )}
         </Box>
     </Modal>
 );
@@ -62,7 +73,4 @@ ConnectionModalComponent.defaultProps = {
     connectingMessage: 'Connecting'
 };
 
-export {
-    ConnectionModalComponent as default,
-    PHASES
-};
+export {ConnectionModalComponent as default, PHASES};

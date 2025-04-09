@@ -1,21 +1,27 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import bindAll from 'lodash.bindall';
-import ConnectionModalComponent, {PHASES} from '../components/connection-modal/connection-modal.jsx';
+import ConnectionModalComponent, {
+    PHASES
+} from '../components/connection-modal/connection-modal.jsx';
 import VM from 'scratch-vm';
 import analytics from '../lib/analytics';
 import extensionData from '../lib/libraries/extensions/index.jsx';
 import {connect} from 'react-redux';
 
 import {closeConnectionModal} from '../reducers/modals';
-import {isMicroBitUpdateSupported, selectAndUpdateMicroBit} from '../lib/microbit-update';
+import {
+    isMicroBitUpdateSupported,
+    selectAndUpdateMicroBit
+} from '../lib/microbit-update';
 
 class ConnectionModal extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         bindAll(this, [
             'handleScanning',
             'handleCancel',
+            'handleConnect',
             'handleConnected',
             'handleConnecting',
             'handleDisconnect',
@@ -25,46 +31,65 @@ class ConnectionModal extends React.Component {
             'handleUpdatePeripheral'
         ]);
         this.state = {
-            extension: extensionData.find(ext => ext.extensionId === props.extensionId),
-            phase: props.vm.getPeripheralIsConnected(props.extensionId) ?
-                PHASES.connected : PHASES.scanning
+            extension: extensionData.find(
+                ext => ext.extensionId === props.extensionId
+            ),
+            phase: props.vm.getPeripheralIsConnected(props.extensionId)
+                ? PHASES.connected
+                : PHASES.intro
         };
     }
-    componentDidMount () {
+    componentDidMount() {
         this.props.vm.on('PERIPHERAL_CONNECTED', this.handleConnected);
         this.props.vm.on('PERIPHERAL_REQUEST_ERROR', this.handleError);
     }
-    componentWillUnmount () {
-        this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleConnected);
-        this.props.vm.removeListener('PERIPHERAL_REQUEST_ERROR', this.handleError);
+    componentWillUnmount() {
+        this.props.vm.removeListener(
+            'PERIPHERAL_CONNECTED',
+            this.handleConnected
+        );
+        this.props.vm.removeListener(
+            'PERIPHERAL_REQUEST_ERROR',
+            this.handleError
+        );
     }
-    handleScanning () {
+    handleScanning() {
         this.setState({
             phase: PHASES.scanning
         });
     }
-    handleConnecting (peripheralId) {
+
+    handleConnect() {
+        console.log('handleConnect', this.props.extensionId);
+        console.log(this.props.vm);
+        this.props.vm.scanForPeripheral(this.props.extensionId);
+    }
+
+    handleConnecting(peripheralId) {
         this.props.vm.connectPeripheral(this.props.extensionId, peripheralId);
         this.setState({
             phase: PHASES.connecting
         });
+
         analytics.event({
             category: 'extensions',
             action: 'connecting',
             label: this.props.extensionId
         });
     }
-    handleDisconnect () {
+    handleDisconnect() {
         try {
             this.props.vm.disconnectPeripheral(this.props.extensionId);
         } finally {
             this.props.onCancel();
         }
     }
-    handleCancel () {
+    handleCancel() {
         try {
             // If we're not connected to a peripheral, close the websocket so we stop scanning.
-            if (!this.props.vm.getPeripheralIsConnected(this.props.extensionId)) {
+            if (
+                !this.props.vm.getPeripheralIsConnected(this.props.extensionId)
+            ) {
                 this.props.vm.disconnectPeripheral(this.props.extensionId);
             }
         } finally {
@@ -72,10 +97,13 @@ class ConnectionModal extends React.Component {
             this.props.onCancel();
         }
     }
-    handleError () {
+    handleError() {
         // Assume errors that come in during scanning phase are the result of not
         // having scratch-link installed.
-        if (this.state.phase === PHASES.scanning || this.state.phase === PHASES.unavailable) {
+        if (
+            this.state.phase === PHASES.scanning ||
+            this.state.phase === PHASES.unavailable
+        ) {
             this.setState({
                 phase: PHASES.unavailable
             });
@@ -90,17 +118,16 @@ class ConnectionModal extends React.Component {
             });
         }
     }
-    handleConnected () {
-        this.setState({
-            phase: PHASES.connected
-        });
+    handleConnected() {
+        this.handleCancel();
+
         analytics.event({
             category: 'extensions',
             action: 'connected',
             label: this.props.extensionId
         });
     }
-    handleHelp () {
+    handleHelp() {
         window.open(this.state.extension.helpLink, '_blank');
         analytics.event({
             category: 'extensions',
@@ -108,7 +135,7 @@ class ConnectionModal extends React.Component {
             label: this.props.extensionId
         });
     }
-    handleUpdatePeripheral () {
+    handleUpdatePeripheral() {
         this.setState({
             phase: PHASES.updatePeripheral
         });
@@ -123,7 +150,7 @@ class ConnectionModal extends React.Component {
      * @param {function(number): void} [progressCallback] Optional callback for progress updates in the range of [0..1].
      * @returns {Promise} Resolves when the update is complete.
      */
-    handleSendUpdate (progressCallback) {
+    handleSendUpdate(progressCallback) {
         analytics.event({
             category: 'extensions',
             action: 'send update to peripheral',
@@ -133,28 +160,49 @@ class ConnectionModal extends React.Component {
         // TODO: get this functionality from the extension
         return selectAndUpdateMicroBit(progressCallback);
     }
-    render () {
-        const canUpdatePeripheral = (this.props.extensionId === 'microbit') && isMicroBitUpdateSupported();
+    render() {
+        const canUpdatePeripheral =
+            this.props.extensionId === 'microbit' &&
+            isMicroBitUpdateSupported();
         return (
             <ConnectionModalComponent
-                connectingMessage={this.state.extension && this.state.extension.connectingMessage}
-                connectionIconURL={this.state.extension && this.state.extension.connectionIconURL}
-                connectionSmallIconURL={this.state.extension && this.state.extension.connectionSmallIconURL}
-                connectionTipIconURL={this.state.extension && this.state.extension.connectionTipIconURL}
+                connectingMessage={
+                    this.state.extension &&
+                    this.state.extension.connectingMessage
+                }
+                connectionIconURL={
+                    this.state.extension &&
+                    this.state.extension.connectionIconURL
+                }
+                connectionSmallIconURL={
+                    this.state.extension &&
+                    this.state.extension.connectionSmallIconURL
+                }
+                connectionTipIconURL={
+                    this.state.extension &&
+                    this.state.extension.connectionTipIconURL
+                }
                 extensionId={this.props.extensionId}
                 name={this.state.extension && this.state.extension.name}
                 phase={this.state.phase}
                 title={this.props.extensionId}
-                useAutoScan={this.state.extension && this.state.extension.useAutoScan}
+                useAutoScan={
+                    this.state.extension && this.state.extension.useAutoScan
+                }
                 vm={this.props.vm}
                 onCancel={this.handleCancel}
                 onConnected={this.handleConnected}
                 onConnecting={this.handleConnecting}
+                onConnect={this.handleConnect}
                 onDisconnect={this.handleDisconnect}
                 onHelp={this.handleHelp}
                 onScanning={this.handleScanning}
-                onSendPeripheralUpdate={canUpdatePeripheral ? this.handleSendUpdate : null}
-                onUpdatePeripheral={canUpdatePeripheral ? this.handleUpdatePeripheral : null}
+                onSendPeripheralUpdate={
+                    canUpdatePeripheral ? this.handleSendUpdate : null
+                }
+                onUpdatePeripheral={
+                    canUpdatePeripheral ? this.handleUpdatePeripheral : null
+                }
             />
         );
     }
@@ -176,7 +224,4 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ConnectionModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectionModal);

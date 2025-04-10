@@ -195,8 +195,6 @@ class Blocks extends React.Component {
         if (this.props.isVisible) {
             this.setLocale();
         }
-
-        console.log('componentDidMount', this);
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (

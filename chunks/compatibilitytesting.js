@@ -19039,7 +19039,6 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
       if (this.props.isVisible) {
         this.setLocale();
       }
-      console.log('componentDidMount', this);
     }
   }, {
     key: "shouldComponentUpdate",

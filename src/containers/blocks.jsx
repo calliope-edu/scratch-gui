@@ -203,7 +203,29 @@ class Blocks extends React.Component {
 
         onMessage(message => {
             if (message.type === 'blocks.updateProject') {
-                this.props.vm.loadProject(message.data);
+                console.log("MESSAGE", message)
+                this.props.vm.loadProject(message.data)
+                        .then(() => {
+                            console.log("loaded Project")
+                            this.props.onLoadedProject(this.props.loadingState, this.props.canSave);
+                            // Wrap in a setTimeout because skin loading in
+                            // the renderer can be async.
+                            setTimeout(() => this.props.onSetProjectUnchanged());
+
+                            // If the vm is not running, call draw on the renderer manually
+                            // This draws the state of the loaded project with no blocks running
+                            // which closely matches the 2.0 behavior, except for monitors–
+                            // 2.0 runs monitors and shows updates (e.g. timer monitor)
+                            // before the VM starts running other hat blocks.
+                            if (!this.props.isStarted) {
+                                // Wrap in a setTimeout because skin loading in
+                                // the renderer can be async.
+                                setTimeout(() => this.props.vm.renderer.draw());
+                            }
+                        })
+                        .catch(e => {
+                            this.props.onError(e);
+                        });
             }
         });
     }

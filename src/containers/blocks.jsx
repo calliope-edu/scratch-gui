@@ -44,6 +44,7 @@ import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
 
 import {activateTab, SOUNDS_TAB_INDEX} from '../reducers/editor-tab';
+import {onMessage, postMessage} from '../lib/iframe.js';
 
 const addFunctionListener = (object, property, callback) => {
     const oldFn = object[property];
@@ -195,6 +196,16 @@ class Blocks extends React.Component {
         if (this.props.isVisible) {
             this.setLocale();
         }
+
+        postMessage({
+            type: 'blocks.ready'
+        });
+
+        onMessage(message => {
+            if (message.type === 'blocks.updateProject') {
+                this.props.vm.loadProject(message.data);
+            }
+        });
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -324,6 +335,13 @@ class Blocks extends React.Component {
 
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
+        this.workspace.addChangeListener(e => {
+            postMessage({
+                type: 'blocks.updateProject',
+                event: e,
+                data: this.props.vm.toJSON()
+            });
+        });
         this.flyoutWorkspace = this.workspace.getFlyout().getWorkspace();
         this.flyoutWorkspace.addChangeListener(
             this.props.vm.flyoutBlockListener

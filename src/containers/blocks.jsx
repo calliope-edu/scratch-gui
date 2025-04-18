@@ -348,6 +348,17 @@ class Blocks extends React.Component {
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.workspace.addChangeListener(e => {
             console.log('Workspace Blocks:', this.workspace.getAllBlocks());
+            console.log('VM State:', this.props.vm.toJSON());
+            console.log('Editing Target:', this.props.vm.editingTarget);
+            
+            console.log('Workspace Change Event:', e);
+            console.log('VM State Before Update:', this.props.vm.toJSON());
+            this.props.vm.blockListener(e); // Ensure the VM processes the event
+            console.log('VM State After Update:', this.props.vm.toJSON());
+            
+            // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
+            // this.props.vm.setEditingTarget(targetId);
+            // this.props.vm.refreshWorkspace();
             postMessage({
                 type: 'blocks.updateProject',
                 event: e,

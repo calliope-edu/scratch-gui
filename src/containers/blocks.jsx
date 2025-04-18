@@ -97,7 +97,10 @@ class Blocks extends React.Component {
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
 
         this.state = {
-            prompt: null
+            prompt: null,
+            receivingExternalUpdate: false,
+            lastSyncTimestamp: 0,
+            lastSyncOrigin: null
         };
         this.onTargetsUpdate = debounce(this.onTargetsUpdate, 100);
         this.toolboxUpdateQueue = [];
@@ -224,23 +227,52 @@ class Blocks extends React.Component {
             // Don't process if there's no data
             if (!message.data) return;
             
+            // Skip if this is our own update or a recent update we've already processed
+            const timestamp = message.timestamp || Date.now();
+            const origin = message.origin || '';
+            
+            // Avoid processing updates from recent operations or from ourselves
+            if (this.state.receivingExternalUpdate || 
+                (timestamp <= this.state.lastSyncTimestamp) ||
+                (Date.now() - timestamp < 200)) {
+                console.log("Skipping update: already processing or too recent");
+                return;
+            }
+            
             try {
-                // Add a slight delay before loading to ensure the workspace is fully prepared
+                console.log("Processing external block update");
+                this.setState({ 
+                    receivingExternalUpdate: true,
+                    lastSyncTimestamp: timestamp,
+                    lastSyncOrigin: origin
+                });
+                
+                // Create a clean snapshot of the project data to prevent reference issues
+                const projectData = JSON.parse(JSON.stringify(message.data));
+                
+                // Temporarily disable change listeners to prevent feedback loops
+                this.workspace.setListenEvents(false);
+                
+                // Load the project with a delay to ensure UI is ready
                 setTimeout(() => {
-                    // Temporarily disable change listeners to prevent feedback loops
-                    const listeners = [...this.workspace.getListeners()];
-                    this.workspace.setListenEvents(false);
-                    
-                    // Load the project
-                    this.props.vm.loadProject(message.data);
-                    
-                    // Re-enable listeners after a short delay
-                    setTimeout(() => {
+                    try {
+                        this.props.vm.loadProject(projectData);
+                        
+                        // Re-enable listeners after the update is complete
+                        setTimeout(() => {
+                            this.workspace.setListenEvents(true);
+                            this.setState({ receivingExternalUpdate: false });
+                        }, 200);
+                    } catch (innerError) {
+                        console.error("Error applying project update:", innerError);
                         this.workspace.setListenEvents(true);
-                    }, 100);
+                        this.setState({ receivingExternalUpdate: false });
+                    }
                 }, 50);
             } catch (error) {
-                console.error("Error loading project:", error);
+                console.error("Error processing project update:", error);
+                this.workspace.setListenEvents(true);
+                this.setState({ receivingExternalUpdate: false });
             }
         }
     };

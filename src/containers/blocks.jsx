@@ -219,8 +219,29 @@ class Blocks extends React.Component {
     handleWindowMessage = (event) => {
         const message = event.data;
         console.log("MESSAGE", message);
+        
         if (message.type === 'blocks.updateProject') {
-            this.props.vm.loadProject(message.data)
+            // Don't process if there's no data
+            if (!message.data) return;
+            
+            try {
+                // Add a slight delay before loading to ensure the workspace is fully prepared
+                setTimeout(() => {
+                    // Temporarily disable change listeners to prevent feedback loops
+                    const listeners = [...this.workspace.getListeners()];
+                    this.workspace.setListenEvents(false);
+                    
+                    // Load the project
+                    this.props.vm.loadProject(message.data);
+                    
+                    // Re-enable listeners after a short delay
+                    setTimeout(() => {
+                        this.workspace.setListenEvents(true);
+                    }, 100);
+                }, 50);
+            } catch (error) {
+                console.error("Error loading project:", error);
+            }
         }
     };
 
@@ -355,25 +376,59 @@ class Blocks extends React.Component {
 
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
+        
+        // Enhanced change handler with debouncing and better synchronization
+        let lastUpdateTime = 0;
+        let pendingUpdate = null;
+        const throttledUpdate = () => {
+            const now = Date.now();
+            if (now - lastUpdateTime < 300) {
+                // If an update was recently sent, queue this one
+                clearTimeout(pendingUpdate);
+                pendingUpdate = setTimeout(() => {
+                    lastUpdateTime = Date.now();
+                    const projectData = this.props.vm.toJSON();
+                    postMessage({
+                        type: 'blocks.updateProject',
+                        data: projectData,
+                        timestamp: Date.now()
+                    });
+                }, 500); // Wait longer for batched updates
+            } else {
+                // No recent update, send immediately
+                lastUpdateTime = now;
+                const projectData = this.props.vm.toJSON();
+                postMessage({
+                    type: 'blocks.updateProject',
+                    data: projectData,
+                    timestamp: now
+                });
+            }
+        };
+        
         this.workspace.addChangeListener(e => {
-            // console.log('Workspace Blocks:', this.workspace.getAllBlocks());
-            // console.log('VM State:', this.props.vm.toJSON());
-            // console.log('Editing Target:', this.props.vm.editingTarget);
+            // Process VM event first
+            this.props.vm.blockListener(e);
             
-            // console.log('Workspace Change Event:', e);
-            // console.log('VM State Before Update:', this.props.vm.toJSON());
-            this.props.vm.blockListener(e); // Ensure the VM processes the event
-            // console.log('VM State After Update:', this.props.vm.toJSON());
-
-            // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
-            // this.props.vm.setEditingTarget(targetId);
-            // this.props.vm.refreshWorkspace();
-            postMessage({
-                type: 'blocks.updateProject',
-                event: e,
-                data: this.props.vm.toJSON()
-            });
+            // Don't send updates for UI events or events that don't affect the project structure
+            if (e.type === 'ui' || 
+                e.type === 'click' ||
+                e.type === 'drag' || 
+                e.type === 'endDrag' || 
+                e.type === 'scroll' || 
+                e.type === 'move') {
+                return;
+            }
+            
+            // Broadcast significant changes only
+            if (e.type === 'create' || 
+                e.type === 'delete' ||
+                e.type === 'change' ||
+                e.type === 'move_block') {
+                throttledUpdate();
+            }
         });
+        
         this.flyoutWorkspace = this.workspace.getFlyout().getWorkspace();
         this.flyoutWorkspace.addChangeListener(
             this.props.vm.flyoutBlockListener
@@ -403,6 +458,7 @@ class Blocks extends React.Component {
             this.handleStatusButtonUpdate
         );
     }
+
     detachVM() {
         this.props.vm.removeListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
         this.props.vm.removeListener('SCRIPT_GLOW_OFF', this.onScriptGlowOff);

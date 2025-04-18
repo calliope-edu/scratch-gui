@@ -190,6 +190,8 @@ class Blocks extends React.Component {
             this.onWorkspaceMetricsChange
         );
 
+        this.workspace.addChangeListener(this.props.vm.blockListener);
+
         this.attachVM();
         // Only update blocks/vm locale when visible to avoid sizing issues
         // If locale changes while not visible it will get handled in didUpdate
@@ -345,6 +347,7 @@ class Blocks extends React.Component {
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.workspace.addChangeListener(e => {
+            console.log('Workspace Blocks:', this.workspace.getAllBlocks());
             postMessage({
                 type: 'blocks.updateProject',
                 event: e,

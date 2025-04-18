@@ -199,11 +199,12 @@ class Blocks extends React.Component {
             this.setLocale();
         }
 
+        window.addEventListener('message', this.handleWindowMessage);
+
         postMessage({
             type: 'blocks.ready'
         });
-
-        window.addEventListener('message', this.handleWindowMessage);
+        
     }
 
     // Define the handler for window messages
@@ -347,15 +348,15 @@ class Blocks extends React.Component {
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.workspace.addChangeListener(e => {
-            console.log('Workspace Blocks:', this.workspace.getAllBlocks());
-            console.log('VM State:', this.props.vm.toJSON());
-            console.log('Editing Target:', this.props.vm.editingTarget);
+            // console.log('Workspace Blocks:', this.workspace.getAllBlocks());
+            // console.log('VM State:', this.props.vm.toJSON());
+            // console.log('Editing Target:', this.props.vm.editingTarget);
             
-            console.log('Workspace Change Event:', e);
-            console.log('VM State Before Update:', this.props.vm.toJSON());
+            // console.log('Workspace Change Event:', e);
+            // console.log('VM State Before Update:', this.props.vm.toJSON());
             this.props.vm.blockListener(e); // Ensure the VM processes the event
-            console.log('VM State After Update:', this.props.vm.toJSON());
-            
+            // console.log('VM State After Update:', this.props.vm.toJSON());
+
             // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
             // this.props.vm.setEditingTarget(targetId);
             // this.props.vm.refreshWorkspace();

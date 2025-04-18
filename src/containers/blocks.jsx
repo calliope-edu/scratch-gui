@@ -221,26 +221,46 @@ class Blocks extends React.Component {
     // Define the handler for window messages
     handleWindowMessage = (event) => {
         const message = event.data;
-        console.log("MESSAGE", message);
+        
+        // Debug information - add timestamp for easier debugging
+        if (message.type && message.type !== 'ping') {
+            console.log(`[${new Date().toISOString().substring(11, 19)}] SCRATCH MESSAGE:`, message.type, message);
+        }
         
         if (message.type === 'blocks.updateProject') {
             // Don't process if there's no data
-            if (!message.data) return;
+            if (!message.data) {
+                console.log("Update ignored: No data in message");
+                return;
+            }
             
             // Skip if this is our own update or a recent update we've already processed
             const timestamp = message.timestamp || Date.now();
             const origin = message.origin || '';
             
-            // Avoid processing updates from recent operations or from ourselves
-            if (this.state.receivingExternalUpdate || 
-                (timestamp <= this.state.lastSyncTimestamp) ||
-                (Date.now() - timestamp < 200)) {
-                console.log("Skipping update: already processing or too recent");
+            // Avoid processing own updates (compare origins)
+            if (origin === this.state.lastSyncOrigin) {
+                console.log(`Update ignored: From same origin ${origin}`);
                 return;
             }
             
+            // For older timestamps, ensure they're significantly older before rejecting
+            // This allows updates from other users to come in even if their timestamp is slightly behind
+            if (timestamp < this.state.lastSyncTimestamp - 10000) {
+                console.log(`Update ignored: Very outdated timestamp (${timestamp} vs ${this.state.lastSyncTimestamp})`);
+                return;
+            }
+
             try {
-                console.log("Processing external block update");
+                console.log(`[${new Date().toISOString().substring(11, 19)}] Processing external block update from ${origin}, timestamp: ${new Date(timestamp).toISOString().substring(11, 19)}`);
+                
+                postMessage({
+                    type: 'blocks.syncStatus',
+                    status: 'receiving',
+                    origin: origin,
+                    timestamp: timestamp
+                });
+                
                 this.setState({ 
                     receivingExternalUpdate: true,
                     lastSyncTimestamp: timestamp,
@@ -253,26 +273,63 @@ class Blocks extends React.Component {
                 // Temporarily disable change listeners to prevent feedback loops
                 this.workspace.setListenEvents(false);
                 
+                console.log(`[${new Date().toISOString().substring(11, 19)}] Applying project data...`);
+                
                 // Load the project with a delay to ensure UI is ready
                 setTimeout(() => {
                     try {
-                        this.props.vm.loadProject(projectData);
-                        
-                        // Re-enable listeners after the update is complete
-                        setTimeout(() => {
+                        this.props.vm.loadProject(projectData).then(() => {
+                            console.log(`[${new Date().toISOString().substring(11, 19)}] Project loaded successfully`);
+                            
+                            // Re-enable listeners after the update is complete
+                            setTimeout(() => {
+                                this.workspace.setListenEvents(true);
+                                this.setState({ receivingExternalUpdate: false });
+                                
+                                postMessage({
+                                    type: 'blocks.syncStatus',
+                                    status: 'idle',
+                                    timestamp: Date.now()
+                                });
+                                
+                                console.log(`[${new Date().toISOString().substring(11, 19)}] Update complete, listeners re-enabled`);
+                            }, 200);
+                        }).catch(err => {
+                            console.error(`[${new Date().toISOString().substring(11, 19)}] Error loading project:`, err);
                             this.workspace.setListenEvents(true);
                             this.setState({ receivingExternalUpdate: false });
-                        }, 200);
+                            
+                            postMessage({
+                                type: 'blocks.syncStatus',
+                                status: 'error',
+                                error: err.message,
+                                timestamp: Date.now()
+                            });
+                        });
                     } catch (innerError) {
-                        console.error("Error applying project update:", innerError);
+                        console.error(`[${new Date().toISOString().substring(11, 19)}] Error applying project update:`, innerError);
                         this.workspace.setListenEvents(true);
                         this.setState({ receivingExternalUpdate: false });
+                        
+                        postMessage({
+                            type: 'blocks.syncStatus',
+                            status: 'error',
+                            error: innerError.message,
+                            timestamp: Date.now()
+                        });
                     }
                 }, 50);
             } catch (error) {
-                console.error("Error processing project update:", error);
+                console.error(`[${new Date().toISOString().substring(11, 19)}] Error processing project update:`, error);
                 this.workspace.setListenEvents(true);
                 this.setState({ receivingExternalUpdate: false });
+                
+                postMessage({
+                    type: 'blocks.syncStatus',
+                    status: 'error',
+                    error: error.message,
+                    timestamp: Date.now()
+                });
             }
         }
     };

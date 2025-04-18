@@ -201,10 +201,18 @@ class Blocks extends React.Component {
 
         window.addEventListener('message', this.handleWindowMessage);
 
-        postMessage({
-            type: 'blocks.ready'
-        });
-        
+        // Wait for the workspace and VM to be ready
+        const checkReady = () => {
+            if (this.workspace && this.props.vm.runtime.targets.length > 0) {
+                postMessage({
+                    type: 'blocks.ready'
+                });
+            } else {
+                setTimeout(checkReady, 100); // Retry until ready
+            }
+        };
+        checkReady();
+
     }
 
     // Define the handler for window messages

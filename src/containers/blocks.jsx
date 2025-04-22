@@ -220,7 +220,15 @@ class Blocks extends React.Component {
         const message = event.data;
         console.log("MESSAGE", message);
         if (message.type === 'blocks.updateProject') {
+            // Load the project into the VM
             this.props.vm.loadProject(message.data)
+                .then(() => {
+                    // After loading the project, ensure the workspace is updated to match
+                    this.props.vm.refreshWorkspace();
+                    
+                    // Log to verify state is correct
+                    console.log('Project loaded, current VM state:', this.props.vm.toJSON());
+                });
         }
     };
 

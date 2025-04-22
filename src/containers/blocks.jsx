@@ -364,23 +364,28 @@ class Blocks extends React.Component {
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
         this.workspace.addChangeListener(e => {
-            // console.log('Workspace Blocks:', this.workspace.getAllBlocks());
-            // console.log('VM State:', this.props.vm.toJSON());
-            // console.log('Editing Target:', this.props.vm.editingTarget);
+            console.log('Change event:', e);
             
-            // console.log('Workspace Change Event:', e);
-            // console.log('VM State Before Update:', this.props.vm.toJSON());
-            this.props.vm.blockListener(e); // Ensure the VM processes the event
-            // console.log('VM State After Update:', this.props.vm.toJSON());
-
-            // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
-            // this.props.vm.setEditingTarget(targetId);
-            // this.props.vm.refreshWorkspace();
-            postMessage({
-                type: 'blocks.updateProject',
-                event: e,
-                data: this.props.vm.toJSON()
-            });
+            // Process the event in the VM first
+            if (e.type !== this.ScratchBlocks.Events.UI && 
+                e.type !== this.ScratchBlocks.Events.FINISHED_LOADING) {
+                this.props.vm.blockListener(e);
+            }
+            
+            // Give the VM a moment to update its state
+            setTimeout(() => {
+                // Now get the complete state
+                const fullState = this.props.vm.toJSON();
+                
+                // Log to verify we're sending complete state
+                console.log('Sending complete state:', fullState);
+                
+                postMessage({
+                    type: 'blocks.updateProject',
+                    event: e,
+                    data: fullState
+                });
+            }, 0);
         });
         this.flyoutWorkspace = this.workspace.getFlyout().getWorkspace();
         this.flyoutWorkspace.addChangeListener(

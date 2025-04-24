@@ -5139,11 +5139,7 @@ var ConnectingStep = function ConnectingStep(props) {
     className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.bottomArea
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
     className: classnames__WEBPACK_IMPORTED_MODULE_3___default()(_connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.bottomAreaItem, _connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.instructions)
-  }, props.connectingMessage), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_dots_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.bottomAreaItem,
-    counter: 1,
-    total: 3
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+  }, props.connectingMessage), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
     className: classnames__WEBPACK_IMPORTED_MODULE_3___default()(_connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.bottomAreaItem, _connection_modal_css__WEBPACK_IMPORTED_MODULE_8___default.a.segmentedButton)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
     disabled: true,
@@ -5861,11 +5857,7 @@ var ScanningStep = function ScanningStep(props) {
     defaultMessage: "If you don't see your device, you may need to update it to work with Scratch.",
     description: "Prompt for updating a peripheral device",
     id: "gui.connection.scanning.updatePeripheralPrompt"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_dots_jsx__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_12___default.a.bottomAreaItem,
-    counter: 0,
-    total: 3
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
     className: classnames__WEBPACK_IMPORTED_MODULE_3___default()(_connection_modal_css__WEBPACK_IMPORTED_MODULE_12___default.a.bottomAreaItem, _connection_modal_css__WEBPACK_IMPORTED_MODULE_12___default.a.buttonRow)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("button", {
     className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_12___default.a.connectionButton,
@@ -5979,11 +5971,7 @@ var UnavailableStep = function UnavailableStep(props) {
     id: "gui.connection.unavailable.enablebluetooth"
   }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
     className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_10___default.a.bottomArea
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_dots_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    error: true,
-    className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_10___default.a.bottomAreaItem,
-    total: 3
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement(_box_box_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
     className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(_connection_modal_css__WEBPACK_IMPORTED_MODULE_10___default.a.bottomAreaItem, _connection_modal_css__WEBPACK_IMPORTED_MODULE_10___default.a.buttonRow)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("button", {
     className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_10___default.a.connectionButton,
@@ -19723,6 +19711,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+var isIpad = navigator.userAgent.includes('Macintosh') && 'ontouchend' in document;
 var ConnectionModal = /*#__PURE__*/function (_React$Component) {
   _inherits(ConnectionModal, _React$Component);
   var _super = _createSuper(ConnectionModal);
@@ -19731,7 +19720,6 @@ var ConnectionModal = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, ConnectionModal);
     _this = _super.call(this, props);
     lodash_bindall__WEBPACK_IMPORTED_MODULE_2___default()(_assertThisInitialized(_this), ['handleScanning', 'handleCancel', 'handleConnect', 'handleConnected', 'handleConnecting', 'handleDisconnect', 'handleError', 'handleHelp', 'handleSendUpdate', 'handleUpdatePeripheral']);
-    var isIpad = navigator.userAgent.includes('Macintosh') && 'ontouchend' in document;
     _this.state = {
       extension: _lib_libraries_extensions_index_jsx__WEBPACK_IMPORTED_MODULE_6__["default"].find(function (ext) {
         return ext.extensionId === props.extensionId;
@@ -19806,7 +19794,7 @@ var ConnectionModal = /*#__PURE__*/function (_React$Component) {
       // having scratch-link installed.
       if (this.state.phase === _components_connection_modal_connection_modal_jsx__WEBPACK_IMPORTED_MODULE_3__["PHASES"].scanning || this.state.phase === _components_connection_modal_connection_modal_jsx__WEBPACK_IMPORTED_MODULE_3__["PHASES"].unavailable) {
         this.setState({
-          phase: _components_connection_modal_connection_modal_jsx__WEBPACK_IMPORTED_MODULE_3__["PHASES"].unavailable
+          phase: isIpad ? _components_connection_modal_connection_modal_jsx__WEBPACK_IMPORTED_MODULE_3__["PHASES"].scanning : _components_connection_modal_connection_modal_jsx__WEBPACK_IMPORTED_MODULE_3__["PHASES"].intro
         });
       } else {
         this.setState({

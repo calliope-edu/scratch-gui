@@ -39,7 +39,7 @@ const ConnectionModalComponent = props => (
         <Box className={styles.body}>
             {props.phase === PHASES.intro && <IntroStep {...props} />}
             {props.phase === PHASES.scanning && !props.useAutoScan && (
-                <IntroStep {...props} />
+                <ScanningStep {...props} />
             )}
             {props.phase === PHASES.scanning && props.useAutoScan && (
                 <AutoScanningStep {...props} />

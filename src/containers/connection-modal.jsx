@@ -30,12 +30,19 @@ class ConnectionModal extends React.Component {
             'handleSendUpdate',
             'handleUpdatePeripheral'
         ]);
+
+        const isIpad =
+            navigator.userAgent.includes('Macintosh') &&
+            'ontouchend' in document;
+
         this.state = {
             extension: extensionData.find(
                 ext => ext.extensionId === props.extensionId
             ),
             phase: props.vm.getPeripheralIsConnected(props.extensionId)
                 ? PHASES.connected
+                : isIpad
+                ? PHASES.scanning
                 : PHASES.intro
         };
     }

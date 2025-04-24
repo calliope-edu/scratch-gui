@@ -15,6 +15,9 @@ import {
     selectAndUpdateMicroBit
 } from '../lib/microbit-update';
 
+const isIpad =
+    navigator.userAgent.includes('Macintosh') && 'ontouchend' in document;
+
 class ConnectionModal extends React.Component {
     constructor(props) {
         super(props);
@@ -30,10 +33,6 @@ class ConnectionModal extends React.Component {
             'handleSendUpdate',
             'handleUpdatePeripheral'
         ]);
-
-        const isIpad =
-            navigator.userAgent.includes('Macintosh') &&
-            'ontouchend' in document;
 
         this.state = {
             extension: extensionData.find(
@@ -110,7 +109,7 @@ class ConnectionModal extends React.Component {
             this.state.phase === PHASES.unavailable
         ) {
             this.setState({
-                phase: PHASES.unavailable
+                phase: isIpad ? PHASES.scanning : PHASES.intro
             });
         } else {
             this.setState({

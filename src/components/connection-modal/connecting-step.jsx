@@ -28,19 +28,22 @@ const ConnectingStep = props => (
             </Box>
         </Box>
         <Box className={styles.bottomArea}>
-            <Box className={classNames(styles.bottomAreaItem, styles.instructions)}>
+            <Box
+                className={classNames(
+                    styles.bottomAreaItem,
+                    styles.instructions
+                )}
+            >
                 {props.connectingMessage}
             </Box>
-            <Dots
-                className={styles.bottomAreaItem}
-                counter={1}
-                total={3}
-            />
-            <div className={classNames(styles.bottomAreaItem, styles.segmentedButton)}>
-                <button
-                    disabled
-                    className={styles.connectionButton}
-                >
+
+            <div
+                className={classNames(
+                    styles.bottomAreaItem,
+                    styles.segmentedButton
+                )}
+            >
+                <button disabled className={styles.connectionButton}>
                     <FormattedMessage
                         defaultMessage="Connecting..."
                         description="Label indicating that connection is in progress"

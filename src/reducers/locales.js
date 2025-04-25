@@ -18,7 +18,7 @@ const initialState = {
             'gui.alerts.lostPeripheralConnection':
                 'Scratch hat keine Verbindung zu {extensionName}.',
             'gui.connection.unavailable.calliopeBlockFile':
-                'Du benötigst den <a href="{link}">Blocks-Hex-File</a> auf deinem Calliope mini.',
+                'Du benötigst den <a href="{link}">Blocks-Hex-Datei</a> auf deinem Calliope mini.',
             'gui.connection.unavailable.chromeBrowser':
                 'Überprüfe, ob du einen Chrome-basierten Browser verwendest.'
         }

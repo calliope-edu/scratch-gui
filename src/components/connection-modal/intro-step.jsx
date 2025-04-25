@@ -21,7 +21,7 @@ const UnavailableStep = props => (
                             description="Message for getting the block hex file on your Calliope mini"
                             id="gui.connection.unavailable.calliopeBlockFile"
                             values={{
-                                link: 'https://blocks.calliope.cc/microbit/scratch-microbit-1.2.0.hex'
+                                link: 'https://calliope.cc/downloads/blocks.hex'
                             }}
                         />
                     </div>

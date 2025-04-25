@@ -5602,7 +5602,7 @@ var UnavailableStep = function UnavailableStep(props) {
     defaultMessage: "You need the <a href='{link}'>Blocks-Hex-File</a> on your Calliope mini.",
     id: "gui.connection.unavailable.calliopeBlockFile",
     values: {
-      link: 'https://blocks.calliope.cc/microbit/scratch-microbit-1.2.0.hex'
+      link: 'https://calliope.cc/downloads/blocks.hex'
     }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default.a.createElement("div", {
     className: _connection_modal_css__WEBPACK_IMPORTED_MODULE_7___default.a.scratchLinkHelpStep
@@ -41795,7 +41795,7 @@ var initialState = {
   messagesByLocale: _objectSpread(_objectSpread({}, scratch_l10n_locales_editor_msgs__WEBPACK_IMPORTED_MODULE_2__["default"]), {}, {
     de: _objectSpread(_objectSpread({}, scratch_l10n_locales_editor_msgs__WEBPACK_IMPORTED_MODULE_2__["default"].de), {}, {
       'gui.alerts.lostPeripheralConnection': 'Scratch hat keine Verbindung zu {extensionName}.',
-      'gui.connection.unavailable.calliopeBlockFile': 'Du benötigst den <a href="{link}">Blocks-Hex-File</a> auf deinem Calliope mini.',
+      'gui.connection.unavailable.calliopeBlockFile': 'Du benötigst den <a href="{link}">Blocks-Hex-Datei</a> auf deinem Calliope mini.',
       'gui.connection.unavailable.chromeBrowser': 'Überprüfe, ob du einen Chrome-basierten Browser verwendest.'
     })
   }),

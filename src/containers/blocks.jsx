@@ -44,6 +44,7 @@ import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
 
 import {activateTab, SOUNDS_TAB_INDEX} from '../reducers/editor-tab';
+import {onMessage, postMessage} from '../lib/iframe.js';
 
 const addFunctionListener = (object, property, callback) => {
     const oldFn = object[property];
@@ -87,9 +88,9 @@ class Blocks extends React.Component {
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
             'setBlocks',
-            'setLocale'
+            'setLocale',
+            'handleWindowMessage'
         ]);
-
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback =
             this.handleConnectionModalStart;
@@ -189,13 +190,48 @@ class Blocks extends React.Component {
             this.onWorkspaceMetricsChange
         );
 
+        this.workspace.addChangeListener(this.props.vm.blockListener);
+
         this.attachVM();
         // Only update blocks/vm locale when visible to avoid sizing issues
         // If locale changes while not visible it will get handled in didUpdate
         if (this.props.isVisible) {
             this.setLocale();
         }
+
+        window.addEventListener('message', this.handleWindowMessage);
+
+        // Wait for the workspace and VM to be ready
+        const checkReady = () => {
+            if (this.workspace && this.props.vm.runtime.targets.length > 0) {
+                postMessage({
+                    type: 'blocks.ready'
+                });
+            } else {
+                setTimeout(checkReady, 100); // Retry until ready
+            }
+        };
+        checkReady();
+
     }
+
+    // Define the handler for window messages
+    handleWindowMessage = (event) => {
+        const message = event.data;
+        console.log("MESSAGE", message);
+        if (message.type === 'blocks.updateProject') {
+            // Load the project into the VM
+            this.props.vm.loadProject(message.data)
+                .then(() => {
+                    // After loading the project, ensure the workspace is updated to match
+                    this.props.vm.refreshWorkspace();
+                    
+                    // Log to verify state is correct
+                    console.log('Project loaded, current VM state:', this.props.vm.toJSON());
+                });
+        }
+    };
+
     shouldComponentUpdate(nextProps, nextState) {
         return (
             this.state.prompt !== nextState.prompt ||
@@ -256,6 +292,9 @@ class Blocks extends React.Component {
         }
     }
     componentWillUnmount() {
+        // Clean up the window message listener
+        window.removeEventListener('message', this.handleWindowMessage);
+
         this.detachVM();
         this.workspace.dispose();
         clearTimeout(this.toolboxUpdateTimeout);
@@ -324,6 +363,25 @@ class Blocks extends React.Component {
 
     attachVM() {
         this.workspace.addChangeListener(this.props.vm.blockListener);
+        this.workspace.addChangeListener(e => {
+            // console.log('Workspace Blocks:', this.workspace.getAllBlocks());
+            // console.log('VM State:', this.props.vm.toJSON());
+            // console.log('Editing Target:', this.props.vm.editingTarget);
+            
+            // console.log('Workspace Change Event:', e);
+            // console.log('VM State Before Update:', this.props.vm.toJSON());
+            this.props.vm.blockListener(e); // Ensure the VM processes the event
+            // console.log('VM State After Update:', this.props.vm.toJSON());
+
+            // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
+            // this.props.vm.setEditingTarget(targetId);
+            // this.props.vm.refreshWorkspace();
+            postMessage({
+                type: 'blocks.updateProject',
+                event: e,
+                data: this.props.vm.toJSON()
+            });
+        });
         this.flyoutWorkspace = this.workspace.getFlyout().getWorkspace();
         this.flyoutWorkspace.addChangeListener(
             this.props.vm.flyoutBlockListener

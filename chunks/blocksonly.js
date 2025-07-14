@@ -18912,7 +18912,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_workspace_metrics__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../reducers/workspace-metrics */ "./src/reducers/workspace-metrics.js");
 /* harmony import */ var _reducers_time_travel__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ../reducers/time-travel */ "./src/reducers/time-travel.js");
 /* harmony import */ var _reducers_editor_tab__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../reducers/editor-tab */ "./src/reducers/editor-tab.js");
-/* harmony import */ var _lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../lib/iframe.js */ "./src/lib/iframe.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 var _excluded = ["anyModalVisible", "canUseCloud", "customProceduresVisible", "extensionLibraryVisible", "options", "stageSize", "vm", "isRtl", "isVisible", "onActivateColorPicker", "onOpenConnectionModal", "onOpenSoundRecorder", "updateToolboxState", "onActivateCustomProcedures", "onRequestCloseExtensionLibrary", "onRequestCloseCustomProcedures", "toolboxXML", "updateMetrics", "useCatBlocks", "workspaceMetrics"];
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -18931,8 +18930,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 
@@ -18982,22 +18979,8 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
     var _this;
     _classCallCheck(this, Blocks);
     _this = _super.call(this, props);
-    _defineProperty(_assertThisInitialized(_this), "handleWindowMessage", function (event) {
-      var message = event.data;
-      console.log("MESSAGE", message);
-      if (message.type === 'blocks.updateProject') {
-        // Load the project into the VM
-        _this.props.vm.loadProject(message.data).then(function () {
-          // After loading the project, ensure the workspace is updated to match
-          _this.props.vm.refreshWorkspace();
-
-          // Log to verify state is correct
-          console.log('Project loaded, current VM state:', _this.props.vm.toJSON());
-        });
-      }
-    });
     _this.ScratchBlocks = Object(_lib_blocks__WEBPACK_IMPORTED_MODULE_6__["default"])(props.vm, false);
-    lodash_bindall__WEBPACK_IMPORTED_MODULE_0___default()(_assertThisInitialized(_this), ['attachVM', 'detachVM', 'getToolboxXML', 'handleCategorySelected', 'handleConnectionModalStart', 'handleDrop', 'handleStatusButtonUpdate', 'handleOpenSoundRecorder', 'handlePromptStart', 'handlePromptCallback', 'handlePromptClose', 'handleCustomProceduresClose', 'onScriptGlowOn', 'onScriptGlowOff', 'onBlockGlowOn', 'onBlockGlowOff', 'handleMonitorsUpdate', 'handleExtensionAdded', 'handleBlocksInfoUpdate', 'onTargetsUpdate', 'onVisualReport', 'onWorkspaceUpdate', 'onWorkspaceMetricsChange', 'setBlocks', 'setLocale', 'handleWindowMessage']);
+    lodash_bindall__WEBPACK_IMPORTED_MODULE_0___default()(_assertThisInitialized(_this), ['attachVM', 'detachVM', 'getToolboxXML', 'handleCategorySelected', 'handleConnectionModalStart', 'handleDrop', 'handleStatusButtonUpdate', 'handleOpenSoundRecorder', 'handlePromptStart', 'handlePromptCallback', 'handlePromptClose', 'handleCustomProceduresClose', 'onScriptGlowOn', 'onScriptGlowOff', 'onBlockGlowOn', 'onBlockGlowOff', 'handleMonitorsUpdate', 'handleExtensionAdded', 'handleBlocksInfoUpdate', 'onTargetsUpdate', 'onVisualReport', 'onWorkspaceUpdate', 'onWorkspaceMetricsChange', 'setBlocks', 'setLocale']);
     _this.ScratchBlocks.prompt = _this.handlePromptStart;
     _this.ScratchBlocks.statusButtonCallback = _this.handleConnectionModalStart;
     _this.ScratchBlocks.recordSoundCallback = _this.handleOpenSoundRecorder;
@@ -19059,29 +19042,13 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
       // @todo change this when blockly supports UI events
       addFunctionListener(this.workspace, 'translate', this.onWorkspaceMetricsChange);
       addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
-      this.workspace.addChangeListener(this.props.vm.blockListener);
       this.attachVM();
       // Only update blocks/vm locale when visible to avoid sizing issues
       // If locale changes while not visible it will get handled in didUpdate
       if (this.props.isVisible) {
         this.setLocale();
       }
-      window.addEventListener('message', this.handleWindowMessage);
-
-      // Wait for the workspace and VM to be ready
-      var checkReady = function checkReady() {
-        if (_this2.workspace && _this2.props.vm.runtime.targets.length > 0) {
-          Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["postMessage"])({
-            type: 'blocks.ready'
-          });
-        } else {
-          setTimeout(checkReady, 100); // Retry until ready
-        }
-      };
-      checkReady();
     }
-
-    // Define the handler for window messages
   }, {
     key: "shouldComponentUpdate",
     value: function shouldComponentUpdate(nextProps, nextState) {
@@ -19129,8 +19096,6 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
-      // Clean up the window message listener
-      window.removeEventListener('message', this.handleWindowMessage);
       this.detachVM();
       this.workspace.dispose();
       clearTimeout(this.toolboxUpdateTimeout);
@@ -19200,27 +19165,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "attachVM",
     value: function attachVM() {
-      var _this5 = this;
       this.workspace.addChangeListener(this.props.vm.blockListener);
-      this.workspace.addChangeListener(function (e) {
-        // console.log('Workspace Blocks:', this.workspace.getAllBlocks());
-        // console.log('VM State:', this.props.vm.toJSON());
-        // console.log('Editing Target:', this.props.vm.editingTarget);
-
-        // console.log('Workspace Change Event:', e);
-        // console.log('VM State Before Update:', this.props.vm.toJSON());
-        _this5.props.vm.blockListener(e); // Ensure the VM processes the event
-        // console.log('VM State After Update:', this.props.vm.toJSON());
-
-        // this.props.vm.shareBlocksToTarget(blocks, this.props.vm.editingTarget.id);
-        // this.props.vm.setEditingTarget(targetId);
-        // this.props.vm.refreshWorkspace();
-        Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["postMessage"])({
-          type: 'blocks.updateProject',
-          event: e,
-          data: _this5.props.vm.toJSON()
-        });
-      });
       this.flyoutWorkspace = this.workspace.getFlyout().getWorkspace();
       this.flyoutWorkspace.addChangeListener(this.props.vm.flyoutBlockListener);
       this.flyoutWorkspace.addChangeListener(this.props.vm.monitorBlockListener);
@@ -19256,9 +19201,9 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "updateToolboxBlockValue",
     value: function updateToolboxBlockValue(id, value) {
-      var _this6 = this;
+      var _this5 = this;
       this.withToolboxUpdates(function () {
-        var block = _this6.workspace.getFlyout().getWorkspace().getBlockById(id);
+        var block = _this5.workspace.getFlyout().getWorkspace().getBlockById(id);
         if (block) {
           block.inputList[0].fieldRow[0].setValue(value);
         }
@@ -19267,29 +19212,29 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "onTargetsUpdate",
     value: function onTargetsUpdate() {
-      var _this7 = this;
+      var _this6 = this;
       if (this.props.vm.editingTarget && this.workspace.getFlyout()) {
         ['glide', 'move', 'set'].forEach(function (prefix) {
-          _this7.updateToolboxBlockValue("".concat(prefix, "x"), Math.round(_this7.props.vm.editingTarget.x).toString());
-          _this7.updateToolboxBlockValue("".concat(prefix, "y"), Math.round(_this7.props.vm.editingTarget.y).toString());
+          _this6.updateToolboxBlockValue("".concat(prefix, "x"), Math.round(_this6.props.vm.editingTarget.x).toString());
+          _this6.updateToolboxBlockValue("".concat(prefix, "y"), Math.round(_this6.props.vm.editingTarget.y).toString());
         });
       }
     }
   }, {
     key: "onWorkspaceMetricsChange",
     value: function onWorkspaceMetricsChange() {
-      var _this8 = this;
+      var _this7 = this;
       var target = this.props.vm.editingTarget;
       if (target && target.id) {
         // Dispatch updateMetrics later, since onWorkspaceMetricsChange may be (very indirectly)
         // called from a reducer, i.e. when you create a custom procedure.
         // TODO: Is this a vehement hack?
         setTimeout(function () {
-          _this8.props.updateMetrics({
+          _this7.props.updateMetrics({
             targetID: target.id,
-            scrollX: _this8.workspace.scrollX,
-            scrollY: _this8.workspace.scrollY,
-            scale: _this8.workspace.scale
+            scrollX: _this7.workspace.scrollX,
+            scrollY: _this7.workspace.scrollY,
+            scale: _this7.workspace.scale
           });
         }, 0);
       }
@@ -19422,7 +19367,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleExtensionAdded",
     value: function handleExtensionAdded(categoryInfo) {
-      var _this9 = this;
+      var _this8 = this;
       var defineBlocks = function defineBlocks(blockInfoArray) {
         if (blockInfoArray && blockInfoArray.length > 0) {
           var staticBlocksJson = [];
@@ -19431,18 +19376,18 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
             if (blockInfo.info && blockInfo.info.isDynamic) {
               dynamicBlocksInfo.push(blockInfo);
             } else if (blockInfo.json) {
-              staticBlocksJson.push(Object(_lib_themes_blockHelpers__WEBPACK_IMPORTED_MODULE_20__["injectExtensionBlockTheme"])(blockInfo.json, _this9.props.theme));
+              staticBlocksJson.push(Object(_lib_themes_blockHelpers__WEBPACK_IMPORTED_MODULE_20__["injectExtensionBlockTheme"])(blockInfo.json, _this8.props.theme));
             }
             // otherwise it's a non-block entry such as '---'
           });
-          _this9.ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
+          _this8.ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
           dynamicBlocksInfo.forEach(function (blockInfo) {
             // This is creating the block factory / constructor -- NOT a specific instance of the block.
             // The factory should only know static info about the block: the category info and the opcode.
             // Anything else will be picked up from the XML attached to the block instance.
             var extendedOpcode = "".concat(categoryInfo.id, "_").concat(blockInfo.info.opcode);
-            var blockDefinition = Object(_lib_define_dynamic_block__WEBPACK_IMPORTED_MODULE_18__["default"])(_this9.ScratchBlocks, categoryInfo, blockInfo, extendedOpcode);
-            _this9.ScratchBlocks.Blocks[extendedOpcode] = blockDefinition;
+            var blockDefinition = Object(_lib_define_dynamic_block__WEBPACK_IMPORTED_MODULE_18__["default"])(_this8.ScratchBlocks, categoryInfo, blockInfo, extendedOpcode);
+            _this8.ScratchBlocks.Blocks[extendedOpcode] = blockDefinition;
           });
         }
       };
@@ -19470,7 +19415,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleCategorySelected",
     value: function handleCategorySelected(categoryId) {
-      var _this10 = this;
+      var _this9 = this;
       var extension = _lib_libraries_extensions_index_jsx__WEBPACK_IMPORTED_MODULE_12__["default"].find(function (ext) {
         return ext.extensionId === categoryId;
       });
@@ -19478,7 +19423,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
         this.handleConnectionModalStart(categoryId);
       }
       this.withToolboxUpdates(function () {
-        _this10.workspace.toolbox_.setSelectedCategoryById(categoryId);
+        _this9.workspace.toolbox_.setSelectedCategoryById(categoryId);
       });
     }
   }, {
@@ -19549,14 +19494,14 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleDrop",
     value: function handleDrop(dragInfo) {
-      var _this11 = this;
+      var _this10 = this;
       fetch(dragInfo.payload.bodyUrl).then(function (response) {
         return response.json();
       }).then(function (blocks) {
-        return _this11.props.vm.shareBlocksToTarget(blocks, _this11.props.vm.editingTarget.id);
+        return _this10.props.vm.shareBlocksToTarget(blocks, _this10.props.vm.editingTarget.id);
       }).then(function () {
-        _this11.props.vm.refreshWorkspace();
-        _this11.updateToolbox(); // To show new variables/custom blocks
+        _this10.props.vm.refreshWorkspace();
+        _this10.updateToolbox(); // To show new variables/custom blocks
       });
     }
   }, {
@@ -32916,45 +32861,6 @@ var HashParserHOC = function HashParserHOC(WrappedComponent) {
   return Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps, mergeProps)(HashParserComponent);
 };
 
-
-/***/ }),
-
-/***/ "./src/lib/iframe.js":
-/*!***************************!*\
-  !*** ./src/lib/iframe.js ***!
-  \***************************/
-/*! exports provided: postMessage, onMessage, offMessage */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postMessage", function() { return postMessage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMessage", function() { return onMessage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "offMessage", function() { return offMessage; });
-/**
- * Post a message to the parent window
- * @param {string} message - The message to send
- */
-var postMessage = function postMessage(message) {
-  console.log('postMessage', message);
-  window.parent.postMessage(message, '*');
-};
-
-/**
- * Listen for messages from the parent window
- * @param {Function} callback - The callback to call when a message is received
- */
-var onMessage = function onMessage(callback) {
-  window.addEventListener('message', callback);
-};
-
-/**
- * Remove the listener for messages from the parent window
- * @param {Function} callback - The callback to remove
- */
-var offMessage = function offMessage(callback) {
-  window.removeEventListener('message', callback);
-};
 
 /***/ }),
 

@@ -135,6 +135,11 @@ const base = {
                     from: 'src/lib/themes/high-contrast/blocks-media',
                     to: 'static/blocks-media/high-contrast',
                     force: true
+                },
+                {
+                    from: 'src/lib/themes/default/blocks-media',
+                    to: 'static/blocks-media/default',
+                    force: true
                 }
             ]
         })

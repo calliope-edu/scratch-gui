@@ -19,8 +19,8 @@ jobs:
             - run: npm update scratch-vm
             - run: npm run build
             - name: Install rsync
-              run: sudo apt-get update && sudo apt-get install -y rsync
-            - run: rsync -av ./build-overwrites/ ./build/
+              run: sudo apt-get update # && sudo apt-get install -y rsync
+            # - run: rsync -av ./build-overwrites/ ./build/
             - name: publish
               uses: peaceiris/actions-gh-pages@v3
               with:

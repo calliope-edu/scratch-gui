@@ -16,7 +16,7 @@ const initialState = {
         de: {
             ...editorMessages.de,
             'gui.alerts.lostPeripheralConnection':
-                'Scratch hat keine Verbindung zu {extensionName}.',
+                'Blocks hat keine Verbindung zum {extensionName}.',
             'gui.connection.unavailable.calliopeBlockFile':
                 'Du benötigst den <a href="{link}">Blocks-Hex-Datei</a> auf deinem Calliope mini.',
             'gui.connection.unavailable.chromeBrowser':

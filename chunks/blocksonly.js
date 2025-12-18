@@ -41794,7 +41794,7 @@ var initialState = {
   locale: 'en',
   messagesByLocale: _objectSpread(_objectSpread({}, scratch_l10n_locales_editor_msgs__WEBPACK_IMPORTED_MODULE_2__["default"]), {}, {
     de: _objectSpread(_objectSpread({}, scratch_l10n_locales_editor_msgs__WEBPACK_IMPORTED_MODULE_2__["default"].de), {}, {
-      'gui.alerts.lostPeripheralConnection': 'Scratch hat keine Verbindung zu {extensionName}.',
+      'gui.alerts.lostPeripheralConnection': 'Blocks hat keine Verbindung zum {extensionName}.',
       'gui.connection.unavailable.calliopeBlockFile': 'Du benötigst den <a href="{link}">Blocks-Hex-Datei</a> auf deinem Calliope mini.',
       'gui.connection.unavailable.chromeBrowser': 'Überprüfe, ob du einen Chrome-basierten Browser verwendest.'
     })

@@ -82,7 +82,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "blocks-only.html",
-    "revision": "ae4524ea296aa4c2d14368a960c83a1a"
+    "revision": "5cc16defa98c2f74a317852f35aed5e1"
   }, {
     "url": "chunks/blocksonly.js",
     "revision": "b8e2cd8c14483e62744412932e926400"
@@ -97,10 +97,10 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "ee6070e40d3c4cda1c6d5e0402744029"
   }, {
     "url": "chunks/gui.js",
-    "revision": "9a8bd79d9e9102aa8ff5b95dcaf430ef"
+    "revision": "e48108a5e2fba4d91739ae7f54138bd4"
   }, {
     "url": "chunks/gui.js.map",
-    "revision": "51e70e7ab94c5be640ca8f79d68b4da7"
+    "revision": "ba807f13a3433a556dd1809ecca1154e"
   }, {
     "url": "chunks/player.js",
     "revision": "bca92fd7ae89156fde32453f0ed0f6f6"
@@ -109,7 +109,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "cfa8dc535c83a67fa9809dd5a68b132a"
   }, {
     "url": "compatibility-testing.html",
-    "revision": "20b036b21ea5092c2ebf94016d09c93f"
+    "revision": "c82580a2f8b8583a00470064b04ef31c"
   }, {
     "url": "https://assets.scratch.mit.edu/internalapi/asset/0015433a406a53f00b792424b823268c.png/get/",
     "revision": "0015433a406a53f00b792424b823268c"
@@ -4105,7 +4105,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "ff8b8c3bf841a11fd5fe3afaa92be1b5"
   }, {
     "url": "index.html",
-    "revision": "a855bed9e39ab641d1730dc6d203d313"
+    "revision": "b145b7293f12f9909540d1556923f575"
   }, {
     "url": "lib.min.js",
     "revision": "d0e9de41d99022abda5da4107bf8396d"
@@ -4114,7 +4114,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "cd767a3c7504005f495df2d86a0c5186"
   }, {
     "url": "player.html",
-    "revision": "7994cb0ada82d767a1e63394a3c12c4f"
+    "revision": "698b62dc3c3ce0605a43c6d8640cff0a"
   }, {
     "url": "static/assets/00aa0c4320b93631ab3c223604ead431.svg",
     "revision": null

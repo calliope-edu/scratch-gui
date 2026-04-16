@@ -41029,6 +41029,11 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
  */
 /* harmony default export */ __webpack_exports__["default"] = (function (appTarget) {
   _containers_gui_jsx__WEBPACK_IMPORTED_MODULE_4__["default"].setAppElement(appTarget);
+  var params = new URLSearchParams(window.location.search);
+  var flag = function flag(value) {
+    return ['1', 'true', 'yes'].includes(String(value || '').toLowerCase());
+  };
+  var isEmbeddedController = window.self !== window.top || flag(params.get('embedded')) || flag(params.get('iframeBridge')) || flag(params.get('controller'));
 
   // note that redux's 'compose' function is just being used as a general utility to make
   // the hierarchy of HOC constructor calls clearer here; it has nothing to do with redux's
@@ -41062,7 +41067,7 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
     onTelemetryModalOptIn: handleTelemetryModalOptIn,
     onTelemetryModalOptOut: handleTelemetryModalOptOut
   }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WrappedGui, {
-    canEditTitle: true,
+    canEditTitle: !isEmbeddedController,
     backpackVisible: true,
     showComingSoon: false,
     backpackHost: backpackHost,

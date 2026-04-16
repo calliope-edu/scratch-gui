@@ -44,6 +44,13 @@ import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
 
 import {activateTab, SOUNDS_TAB_INDEX} from '../reducers/editor-tab';
+import {
+    createBridgeMessage,
+    getIframeBridgeConfig,
+    isBridgePayloadForInstance,
+    isParentMessage,
+    postParentMessage
+} from '../lib/iframe.js';
 
 const addFunctionListener = (object, property, callback) => {
     const oldFn = object[property];
@@ -84,16 +91,29 @@ class Blocks extends React.Component {
             'handleBlocksInfoUpdate',
             'onTargetsUpdate',
             'onVisualReport',
+            'onProjectChangedForBridge',
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
             'setBlocks',
-            'setLocale'
+            'setLocale',
+            'flushPendingProjectLoad',
+            'handleWindowMessage',
+            'postProjectToParent',
+            'sendReadyToParent'
         ]);
 
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback =
             this.handleConnectionModalStart;
         this.ScratchBlocks.recordSoundCallback = this.handleOpenSoundRecorder;
+
+        this.iframeBridge = getIframeBridgeConfig();
+        this.pendingProjectLoad = null;
+        this.bridgeLoadInFlight = false;
+        this.bridgeLastLoadedProject = null;
+        this.bridgeLastPostedProject = null;
+        this.bridgeReadySent = false;
+        this.postProjectToParent = debounce(this.postProjectToParent, 120);
 
         this.state = {
             prompt: null
@@ -195,6 +215,20 @@ class Blocks extends React.Component {
         if (this.props.isVisible) {
             this.setLocale();
         }
+
+        if (this.iframeBridge.enabled) {
+            window.addEventListener('message', this.handleWindowMessage);
+
+            const checkReady = () => {
+                if (this.workspace && this.props.vm.runtime.targets.length > 0) {
+                    this.sendReadyToParent();
+                } else {
+                    setTimeout(checkReady, 100);
+                }
+            };
+
+            checkReady();
+        }
     }
     shouldComponentUpdate(nextProps, nextState) {
         return (
@@ -256,6 +290,11 @@ class Blocks extends React.Component {
         }
     }
     componentWillUnmount() {
+        if (this.iframeBridge.enabled) {
+            window.removeEventListener('message', this.handleWindowMessage);
+            this.postProjectToParent.cancel();
+        }
+
         this.detachVM();
         this.workspace.dispose();
         clearTimeout(this.toolboxUpdateTimeout);
@@ -352,6 +391,10 @@ class Blocks extends React.Component {
             'PERIPHERAL_DISCONNECTED',
             this.handleStatusButtonUpdate
         );
+        this.props.vm.addListener(
+            'PROJECT_CHANGED',
+            this.onProjectChangedForBridge
+        );
     }
     detachVM() {
         this.props.vm.removeListener('SCRIPT_GLOW_ON', this.onScriptGlowOn);
@@ -381,6 +424,129 @@ class Blocks extends React.Component {
             'PERIPHERAL_DISCONNECTED',
             this.handleStatusButtonUpdate
         );
+        this.props.vm.removeListener(
+            'PROJECT_CHANGED',
+            this.onProjectChangedForBridge
+        );
+    }
+
+    handleWindowMessage(event) {
+        if (!this.iframeBridge.enabled || !isParentMessage(event, this.iframeBridge)) {
+            return;
+        }
+
+        const message = event.data;
+        if (!message || typeof message !== 'object' || !isBridgePayloadForInstance(message, this.iframeBridge)) {
+            return;
+        }
+
+        if (message.type === 'blocks.ping') {
+            this.sendReadyToParent(true);
+            return;
+        }
+
+        if (message.type === 'blocks.requestProject') {
+            this.postProjectToParent.flush();
+            this.postProjectToParent();
+            this.postProjectToParent.flush();
+            return;
+        }
+
+        if (message.type !== 'blocks.updateProject' || !message.data) {
+            return;
+        }
+
+        const serializedProject = JSON.stringify(message.data);
+        if (
+            !serializedProject ||
+            serializedProject === this.bridgeLastLoadedProject ||
+            serializedProject === this.bridgeLastPostedProject
+        ) {
+            return;
+        }
+
+        this.pendingProjectLoad = {
+            data: message.data,
+            serializedProject
+        };
+        this.flushPendingProjectLoad();
+    }
+
+    flushPendingProjectLoad() {
+        if (!this.iframeBridge.enabled || this.bridgeLoadInFlight || !this.pendingProjectLoad) {
+            return;
+        }
+
+        const nextLoad = this.pendingProjectLoad;
+        this.pendingProjectLoad = null;
+        this.bridgeLoadInFlight = true;
+
+        this.props.vm
+            .loadProject(nextLoad.data)
+            .then(() => {
+                this.props.vm.refreshWorkspace();
+                this.bridgeLastLoadedProject = nextLoad.serializedProject;
+                this.bridgeLastPostedProject = nextLoad.serializedProject;
+            })
+            .catch(error => {
+                log.error(error);
+            })
+            .finally(() => {
+                this.bridgeLoadInFlight = false;
+                if (this.pendingProjectLoad) {
+                    this.flushPendingProjectLoad();
+                }
+            });
+    }
+
+    sendReadyToParent(force = false) {
+        if (!this.iframeBridge.enabled || (this.bridgeReadySent && !force)) {
+            return;
+        }
+
+        this.bridgeReadySent = true;
+        postParentMessage(
+            createBridgeMessage({
+                type: 'blocks.ready',
+                instanceId: this.iframeBridge.instanceId
+            }),
+            this.iframeBridge
+        );
+    }
+
+    postProjectToParent() {
+        if (!this.iframeBridge.enabled || this.bridgeLoadInFlight) {
+            return;
+        }
+
+        const project = this.props.vm.toJSON();
+        const serializedProject = JSON.stringify(project);
+
+        if (
+            !serializedProject ||
+            serializedProject === this.bridgeLastPostedProject ||
+            serializedProject === this.bridgeLastLoadedProject
+        ) {
+            return;
+        }
+
+        this.bridgeLastPostedProject = serializedProject;
+        postParentMessage(
+            createBridgeMessage({
+                type: 'blocks.updateProject',
+                data: project,
+                instanceId: this.iframeBridge.instanceId
+            }),
+            this.iframeBridge
+        );
+    }
+
+    onProjectChangedForBridge() {
+        if (!this.iframeBridge.enabled || this.bridgeLoadInFlight) {
+            return;
+        }
+
+        this.postProjectToParent();
     }
 
     updateToolboxBlockValue(id, value) {

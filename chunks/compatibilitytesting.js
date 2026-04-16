@@ -18891,7 +18891,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_workspace_metrics__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../reducers/workspace-metrics */ "./src/reducers/workspace-metrics.js");
 /* harmony import */ var _reducers_time_travel__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ../reducers/time-travel */ "./src/reducers/time-travel.js");
 /* harmony import */ var _reducers_editor_tab__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../reducers/editor-tab */ "./src/reducers/editor-tab.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* harmony import */ var _lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../lib/iframe.js */ "./src/lib/iframe.js");
 var _excluded = ["anyModalVisible", "canUseCloud", "customProceduresVisible", "extensionLibraryVisible", "options", "stageSize", "vm", "isRtl", "isVisible", "onActivateColorPicker", "onOpenConnectionModal", "onOpenSoundRecorder", "updateToolboxState", "onActivateCustomProcedures", "onRequestCloseExtensionLibrary", "onRequestCloseCustomProcedures", "toolboxXML", "updateMetrics", "useCatBlocks", "workspaceMetrics"];
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
@@ -18899,6 +18899,7 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
@@ -18909,6 +18910,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -18959,10 +18961,17 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
     _classCallCheck(this, Blocks);
     _this = _super.call(this, props);
     _this.ScratchBlocks = Object(_lib_blocks__WEBPACK_IMPORTED_MODULE_6__["default"])(props.vm, false);
-    lodash_bindall__WEBPACK_IMPORTED_MODULE_0___default()(_assertThisInitialized(_this), ['attachVM', 'detachVM', 'getToolboxXML', 'handleCategorySelected', 'handleConnectionModalStart', 'handleDrop', 'handleStatusButtonUpdate', 'handleOpenSoundRecorder', 'handlePromptStart', 'handlePromptCallback', 'handlePromptClose', 'handleCustomProceduresClose', 'onScriptGlowOn', 'onScriptGlowOff', 'onBlockGlowOn', 'onBlockGlowOff', 'handleMonitorsUpdate', 'handleExtensionAdded', 'handleBlocksInfoUpdate', 'onTargetsUpdate', 'onVisualReport', 'onWorkspaceUpdate', 'onWorkspaceMetricsChange', 'setBlocks', 'setLocale']);
+    lodash_bindall__WEBPACK_IMPORTED_MODULE_0___default()(_assertThisInitialized(_this), ['attachVM', 'detachVM', 'getToolboxXML', 'handleCategorySelected', 'handleConnectionModalStart', 'handleDrop', 'handleStatusButtonUpdate', 'handleOpenSoundRecorder', 'handlePromptStart', 'handlePromptCallback', 'handlePromptClose', 'handleCustomProceduresClose', 'onScriptGlowOn', 'onScriptGlowOff', 'onBlockGlowOn', 'onBlockGlowOff', 'handleMonitorsUpdate', 'handleExtensionAdded', 'handleBlocksInfoUpdate', 'onTargetsUpdate', 'onVisualReport', 'onProjectChangedForBridge', 'onWorkspaceUpdate', 'onWorkspaceMetricsChange', 'setBlocks', 'setLocale', 'flushPendingProjectLoad', 'handleWindowMessage', 'postProjectToParent', 'sendReadyToParent']);
     _this.ScratchBlocks.prompt = _this.handlePromptStart;
     _this.ScratchBlocks.statusButtonCallback = _this.handleConnectionModalStart;
     _this.ScratchBlocks.recordSoundCallback = _this.handleOpenSoundRecorder;
+    _this.iframeBridge = Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["getIframeBridgeConfig"])();
+    _this.pendingProjectLoad = null;
+    _this.bridgeLoadInFlight = false;
+    _this.bridgeLastLoadedProject = null;
+    _this.bridgeLastPostedProject = null;
+    _this.bridgeReadySent = false;
+    _this.postProjectToParent = lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(_this.postProjectToParent, 120);
     _this.state = {
       prompt: null
     };
@@ -19027,6 +19036,17 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
       if (this.props.isVisible) {
         this.setLocale();
       }
+      if (this.iframeBridge.enabled) {
+        window.addEventListener('message', this.handleWindowMessage);
+        var checkReady = function checkReady() {
+          if (_this2.workspace && _this2.props.vm.runtime.targets.length > 0) {
+            _this2.sendReadyToParent();
+          } else {
+            setTimeout(checkReady, 100);
+          }
+        };
+        checkReady();
+      }
     }
   }, {
     key: "shouldComponentUpdate",
@@ -19075,6 +19095,10 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
+      if (this.iframeBridge.enabled) {
+        window.removeEventListener('message', this.handleWindowMessage);
+        this.postProjectToParent.cancel();
+      }
       this.detachVM();
       this.workspace.dispose();
       clearTimeout(this.toolboxUpdateTimeout);
@@ -19160,6 +19184,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
       this.props.vm.addListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
       this.props.vm.addListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
       this.props.vm.addListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
+      this.props.vm.addListener('PROJECT_CHANGED', this.onProjectChangedForBridge);
     }
   }, {
     key: "detachVM",
@@ -19176,13 +19201,109 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
       this.props.vm.removeListener('BLOCKSINFO_UPDATE', this.handleBlocksInfoUpdate);
       this.props.vm.removeListener('PERIPHERAL_CONNECTED', this.handleStatusButtonUpdate);
       this.props.vm.removeListener('PERIPHERAL_DISCONNECTED', this.handleStatusButtonUpdate);
+      this.props.vm.removeListener('PROJECT_CHANGED', this.onProjectChangedForBridge);
+    }
+  }, {
+    key: "handleWindowMessage",
+    value: function handleWindowMessage(event) {
+      if (!this.iframeBridge.enabled || !Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["isParentMessage"])(event, this.iframeBridge)) {
+        return;
+      }
+      var message = event.data;
+      if (!message || _typeof(message) !== 'object' || !Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["isBridgePayloadForInstance"])(message, this.iframeBridge)) {
+        return;
+      }
+      if (message.type === 'blocks.ping') {
+        this.sendReadyToParent(true);
+        return;
+      }
+      if (message.type === 'blocks.requestProject') {
+        this.postProjectToParent.flush();
+        this.postProjectToParent();
+        this.postProjectToParent.flush();
+        return;
+      }
+      if (message.type !== 'blocks.updateProject' || !message.data) {
+        return;
+      }
+      var serializedProject = JSON.stringify(message.data);
+      if (!serializedProject || serializedProject === this.bridgeLastLoadedProject || serializedProject === this.bridgeLastPostedProject) {
+        return;
+      }
+      this.pendingProjectLoad = {
+        data: message.data,
+        serializedProject: serializedProject
+      };
+      this.flushPendingProjectLoad();
+    }
+  }, {
+    key: "flushPendingProjectLoad",
+    value: function flushPendingProjectLoad() {
+      var _this5 = this;
+      if (!this.iframeBridge.enabled || this.bridgeLoadInFlight || !this.pendingProjectLoad) {
+        return;
+      }
+      var nextLoad = this.pendingProjectLoad;
+      this.pendingProjectLoad = null;
+      this.bridgeLoadInFlight = true;
+      this.props.vm.loadProject(nextLoad.data).then(function () {
+        _this5.props.vm.refreshWorkspace();
+        _this5.bridgeLastLoadedProject = nextLoad.serializedProject;
+        _this5.bridgeLastPostedProject = nextLoad.serializedProject;
+      }).catch(function (error) {
+        _lib_log_js__WEBPACK_IMPORTED_MODULE_8__["default"].error(error);
+      }).finally(function () {
+        _this5.bridgeLoadInFlight = false;
+        if (_this5.pendingProjectLoad) {
+          _this5.flushPendingProjectLoad();
+        }
+      });
+    }
+  }, {
+    key: "sendReadyToParent",
+    value: function sendReadyToParent() {
+      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      if (!this.iframeBridge.enabled || this.bridgeReadySent && !force) {
+        return;
+      }
+      this.bridgeReadySent = true;
+      Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["postParentMessage"])(Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["createBridgeMessage"])({
+        type: 'blocks.ready',
+        instanceId: this.iframeBridge.instanceId
+      }), this.iframeBridge);
+    }
+  }, {
+    key: "postProjectToParent",
+    value: function postProjectToParent() {
+      if (!this.iframeBridge.enabled || this.bridgeLoadInFlight) {
+        return;
+      }
+      var project = this.props.vm.toJSON();
+      var serializedProject = JSON.stringify(project);
+      if (!serializedProject || serializedProject === this.bridgeLastPostedProject || serializedProject === this.bridgeLastLoadedProject) {
+        return;
+      }
+      this.bridgeLastPostedProject = serializedProject;
+      Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["postParentMessage"])(Object(_lib_iframe_js__WEBPACK_IMPORTED_MODULE_30__["createBridgeMessage"])({
+        type: 'blocks.updateProject',
+        data: project,
+        instanceId: this.iframeBridge.instanceId
+      }), this.iframeBridge);
+    }
+  }, {
+    key: "onProjectChangedForBridge",
+    value: function onProjectChangedForBridge() {
+      if (!this.iframeBridge.enabled || this.bridgeLoadInFlight) {
+        return;
+      }
+      this.postProjectToParent();
     }
   }, {
     key: "updateToolboxBlockValue",
     value: function updateToolboxBlockValue(id, value) {
-      var _this5 = this;
+      var _this6 = this;
       this.withToolboxUpdates(function () {
-        var block = _this5.workspace.getFlyout().getWorkspace().getBlockById(id);
+        var block = _this6.workspace.getFlyout().getWorkspace().getBlockById(id);
         if (block) {
           block.inputList[0].fieldRow[0].setValue(value);
         }
@@ -19191,29 +19312,29 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "onTargetsUpdate",
     value: function onTargetsUpdate() {
-      var _this6 = this;
+      var _this7 = this;
       if (this.props.vm.editingTarget && this.workspace.getFlyout()) {
         ['glide', 'move', 'set'].forEach(function (prefix) {
-          _this6.updateToolboxBlockValue("".concat(prefix, "x"), Math.round(_this6.props.vm.editingTarget.x).toString());
-          _this6.updateToolboxBlockValue("".concat(prefix, "y"), Math.round(_this6.props.vm.editingTarget.y).toString());
+          _this7.updateToolboxBlockValue("".concat(prefix, "x"), Math.round(_this7.props.vm.editingTarget.x).toString());
+          _this7.updateToolboxBlockValue("".concat(prefix, "y"), Math.round(_this7.props.vm.editingTarget.y).toString());
         });
       }
     }
   }, {
     key: "onWorkspaceMetricsChange",
     value: function onWorkspaceMetricsChange() {
-      var _this7 = this;
+      var _this8 = this;
       var target = this.props.vm.editingTarget;
       if (target && target.id) {
         // Dispatch updateMetrics later, since onWorkspaceMetricsChange may be (very indirectly)
         // called from a reducer, i.e. when you create a custom procedure.
         // TODO: Is this a vehement hack?
         setTimeout(function () {
-          _this7.props.updateMetrics({
+          _this8.props.updateMetrics({
             targetID: target.id,
-            scrollX: _this7.workspace.scrollX,
-            scrollY: _this7.workspace.scrollY,
-            scale: _this7.workspace.scale
+            scrollX: _this8.workspace.scrollX,
+            scrollY: _this8.workspace.scrollY,
+            scale: _this8.workspace.scale
           });
         }, 0);
       }
@@ -19346,7 +19467,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleExtensionAdded",
     value: function handleExtensionAdded(categoryInfo) {
-      var _this8 = this;
+      var _this9 = this;
       var defineBlocks = function defineBlocks(blockInfoArray) {
         if (blockInfoArray && blockInfoArray.length > 0) {
           var staticBlocksJson = [];
@@ -19355,18 +19476,18 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
             if (blockInfo.info && blockInfo.info.isDynamic) {
               dynamicBlocksInfo.push(blockInfo);
             } else if (blockInfo.json) {
-              staticBlocksJson.push(Object(_lib_themes_blockHelpers__WEBPACK_IMPORTED_MODULE_20__["injectExtensionBlockTheme"])(blockInfo.json, _this8.props.theme));
+              staticBlocksJson.push(Object(_lib_themes_blockHelpers__WEBPACK_IMPORTED_MODULE_20__["injectExtensionBlockTheme"])(blockInfo.json, _this9.props.theme));
             }
             // otherwise it's a non-block entry such as '---'
           });
-          _this8.ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
+          _this9.ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
           dynamicBlocksInfo.forEach(function (blockInfo) {
             // This is creating the block factory / constructor -- NOT a specific instance of the block.
             // The factory should only know static info about the block: the category info and the opcode.
             // Anything else will be picked up from the XML attached to the block instance.
             var extendedOpcode = "".concat(categoryInfo.id, "_").concat(blockInfo.info.opcode);
-            var blockDefinition = Object(_lib_define_dynamic_block__WEBPACK_IMPORTED_MODULE_18__["default"])(_this8.ScratchBlocks, categoryInfo, blockInfo, extendedOpcode);
-            _this8.ScratchBlocks.Blocks[extendedOpcode] = blockDefinition;
+            var blockDefinition = Object(_lib_define_dynamic_block__WEBPACK_IMPORTED_MODULE_18__["default"])(_this9.ScratchBlocks, categoryInfo, blockInfo, extendedOpcode);
+            _this9.ScratchBlocks.Blocks[extendedOpcode] = blockDefinition;
           });
         }
       };
@@ -19394,7 +19515,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleCategorySelected",
     value: function handleCategorySelected(categoryId) {
-      var _this9 = this;
+      var _this10 = this;
       var extension = _lib_libraries_extensions_index_jsx__WEBPACK_IMPORTED_MODULE_12__["default"].find(function (ext) {
         return ext.extensionId === categoryId;
       });
@@ -19402,7 +19523,7 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
         this.handleConnectionModalStart(categoryId);
       }
       this.withToolboxUpdates(function () {
-        _this9.workspace.toolbox_.setSelectedCategoryById(categoryId);
+        _this10.workspace.toolbox_.setSelectedCategoryById(categoryId);
       });
     }
   }, {
@@ -19473,14 +19594,14 @@ var Blocks = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "handleDrop",
     value: function handleDrop(dragInfo) {
-      var _this10 = this;
+      var _this11 = this;
       fetch(dragInfo.payload.bodyUrl).then(function (response) {
         return response.json();
       }).then(function (blocks) {
-        return _this10.props.vm.shareBlocksToTarget(blocks, _this10.props.vm.editingTarget.id);
+        return _this11.props.vm.shareBlocksToTarget(blocks, _this11.props.vm.editingTarget.id);
       }).then(function () {
-        _this10.props.vm.refreshWorkspace();
-        _this10.updateToolbox(); // To show new variables/custom blocks
+        _this11.props.vm.refreshWorkspace();
+        _this11.updateToolbox(); // To show new variables/custom blocks
       });
     }
   }, {
@@ -32840,6 +32961,97 @@ var HashParserHOC = function HashParserHOC(WrappedComponent) {
   return Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, mapDispatchToProps, mergeProps)(HashParserComponent);
 };
 
+
+/***/ }),
+
+/***/ "./src/lib/iframe.js":
+/*!***************************!*\
+  !*** ./src/lib/iframe.js ***!
+  \***************************/
+/*! exports provided: getIframeBridgeConfig, createBridgeMessage, postParentMessage, isParentMessage, isBridgePayloadForInstance */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getIframeBridgeConfig", function() { return getIframeBridgeConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createBridgeMessage", function() { return createBridgeMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postParentMessage", function() { return postParentMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isParentMessage", function() { return isParentMessage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isBridgePayloadForInstance", function() { return isBridgePayloadForInstance; });
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* eslint-disable linebreak-style, eol-last */
+var TRUE_VALUES = ['1', 'true', 'yes', 'on', 'embedded'];
+var normalizeFlag = function normalizeFlag(value) {
+  return TRUE_VALUES.includes(String(value || '').trim().toLowerCase());
+};
+var getSearchParams = function getSearchParams() {
+  if (typeof window === 'undefined') {
+    return new URLSearchParams();
+  }
+  return new URLSearchParams(window.location.search || '');
+};
+var getIframeBridgeConfig = function getIframeBridgeConfig() {
+  if (typeof window === 'undefined') {
+    return {
+      enabled: false,
+      instanceId: null,
+      parentOrigin: '*'
+    };
+  }
+  var params = getSearchParams();
+  var enabled = window.parent !== window && (normalizeFlag(params.get('embedded')) || normalizeFlag(params.get('iframeBridge')) || normalizeFlag(params.get('controller')) || String(params.get('mode') || '').trim().toLowerCase() === 'embedded');
+  return {
+    enabled: enabled,
+    instanceId: String(params.get('instance') || '').trim() || null,
+    parentOrigin: String(params.get('parentOrigin') || '').trim() || '*'
+  };
+};
+var createBridgeMessage = function createBridgeMessage(_ref) {
+  var type = _ref.type,
+    data = _ref.data,
+    _ref$instanceId = _ref.instanceId,
+    instanceId = _ref$instanceId === void 0 ? null : _ref$instanceId,
+    _ref$meta = _ref.meta,
+    meta = _ref$meta === void 0 ? {} : _ref$meta;
+  return {
+    source: 'calliope-scratch-gui',
+    version: 2,
+    instanceId: instanceId,
+    type: type,
+    data: data,
+    meta: meta
+  };
+};
+var postParentMessage = function postParentMessage(message) {
+  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getIframeBridgeConfig();
+  if (typeof window === 'undefined' || !config.enabled || window.parent === window) {
+    return;
+  }
+  window.parent.postMessage(message, config.parentOrigin || '*');
+};
+var isParentMessage = function isParentMessage(event) {
+  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getIframeBridgeConfig();
+  if (typeof window === 'undefined' || !config.enabled) {
+    return false;
+  }
+  if (event.source !== window.parent) {
+    return false;
+  }
+  if (config.parentOrigin && config.parentOrigin !== '*' && event.origin !== config.parentOrigin) {
+    return false;
+  }
+  return true;
+};
+var isBridgePayloadForInstance = function isBridgePayloadForInstance(payload) {
+  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getIframeBridgeConfig();
+  if (!payload || _typeof(payload) !== 'object') {
+    return false;
+  }
+  if (!config.instanceId || !payload.instanceId) {
+    return true;
+  }
+  return payload.instanceId === config.instanceId;
+};
 
 /***/ }),
 

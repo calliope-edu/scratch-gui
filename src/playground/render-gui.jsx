@@ -27,6 +27,14 @@ const handleTelemetryModalOptOut = () => {
 export default appTarget => {
     GUI.setAppElement(appTarget);
 
+    const params = new URLSearchParams(window.location.search);
+    const flag = value => ['1', 'true', 'yes'].includes(String(value || '').toLowerCase());
+    const isEmbeddedController =
+        window.self !== window.top ||
+        flag(params.get('embedded')) ||
+        flag(params.get('iframeBridge')) ||
+        flag(params.get('controller'));
+
     // note that redux's 'compose' function is just being used as a general utility to make
     // the hierarchy of HOC constructor calls clearer here; it has nothing to do with redux's
     // ability to compose reducers.
@@ -74,7 +82,7 @@ export default appTarget => {
             />
         ) : (
             <WrappedGui
-                canEditTitle
+                canEditTitle={!isEmbeddedController}
                 backpackVisible
                 showComingSoon={false}
                 backpackHost={backpackHost}

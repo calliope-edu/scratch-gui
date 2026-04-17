@@ -82,34 +82,34 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": null
   }, {
     "url": "blocks-only.html",
-    "revision": "5cc16defa98c2f74a317852f35aed5e1"
+    "revision": "ae4524ea296aa4c2d14368a960c83a1a"
   }, {
     "url": "chunks/blocksonly.js",
-    "revision": "b8e2cd8c14483e62744412932e926400"
+    "revision": "1ad86d1ca6c81ed5a49751f4c7f31c34"
   }, {
     "url": "chunks/blocksonly.js.map",
-    "revision": "726f33a3995de6b2925a4f617b313421"
+    "revision": "77a40a9d1279436e4a40efb95b8365a5"
   }, {
     "url": "chunks/compatibilitytesting.js",
-    "revision": "764b75a274d52b65303b169b6e5b632e"
+    "revision": "e70c8511cba6196add383cedd12e33a3"
   }, {
     "url": "chunks/compatibilitytesting.js.map",
-    "revision": "ee6070e40d3c4cda1c6d5e0402744029"
+    "revision": "aa3b2bb5987696bec5331bbd66cc79bf"
   }, {
     "url": "chunks/gui.js",
-    "revision": "e48108a5e2fba4d91739ae7f54138bd4"
+    "revision": "014bbf85af30d396c9ac0dce6e29dc28"
   }, {
     "url": "chunks/gui.js.map",
-    "revision": "ba807f13a3433a556dd1809ecca1154e"
+    "revision": "1cf79273fe0d69a15ad5fe625ff46cfd"
   }, {
     "url": "chunks/player.js",
-    "revision": "bca92fd7ae89156fde32453f0ed0f6f6"
+    "revision": "c47975dc943b0948e758906e0c6884cf"
   }, {
     "url": "chunks/player.js.map",
-    "revision": "cfa8dc535c83a67fa9809dd5a68b132a"
+    "revision": "cc5e38d026b12e975fc1160fd57e3e89"
   }, {
     "url": "compatibility-testing.html",
-    "revision": "c82580a2f8b8583a00470064b04ef31c"
+    "revision": "20b036b21ea5092c2ebf94016d09c93f"
   }, {
     "url": "https://assets.scratch.mit.edu/internalapi/asset/0015433a406a53f00b792424b823268c.png/get/",
     "revision": "0015433a406a53f00b792424b823268c"
@@ -4105,7 +4105,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "ff8b8c3bf841a11fd5fe3afaa92be1b5"
   }, {
     "url": "index.html",
-    "revision": "b145b7293f12f9909540d1556923f575"
+    "revision": "a855bed9e39ab641d1730dc6d203d313"
   }, {
     "url": "lib.min.js",
     "revision": "d0e9de41d99022abda5da4107bf8396d"
@@ -4114,7 +4114,7 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "cd767a3c7504005f495df2d86a0c5186"
   }, {
     "url": "player.html",
-    "revision": "698b62dc3c3ce0605a43c6d8640cff0a"
+    "revision": "7994cb0ada82d767a1e63394a3c12c4f"
   }, {
     "url": "static/assets/00aa0c4320b93631ab3c223604ead431.svg",
     "revision": null

@@ -10,14 +10,120 @@
   <body>
     <script>
       (function () {
+        const SCRATCH_LINK_PROXY_REQUEST = 'blocks.scratchLinkProxy.request';
         const params = new URLSearchParams(window.location.search);
+        const truthy = ['1', 'true', 'yes'];
+        const flag = value => truthy.includes(String(value || '').toLowerCase());
         const isEmbedded =
           window.self !== window.top ||
-          ['1', 'true', 'yes'].includes(String(params.get('embedded') || '').toLowerCase()) ||
-          ['1', 'true', 'yes'].includes(String(params.get('iframeBridge') || '').toLowerCase()) ||
-          ['1', 'true', 'yes'].includes(String(params.get('controller') || '').toLowerCase());
+          flag(params.get('embedded')) ||
+          flag(params.get('iframeBridge')) ||
+          flag(params.get('controller'));
+
+        const installScratchLinkProxy = function () {
+          const parentOrigin = String(params.get('parentOrigin') || '').trim() || '*';
+          const instanceId = String(params.get('instance') || '').trim() || null;
+          const Scratch = self.Scratch || (self.Scratch = {});
+
+          if (Scratch.ScratchLinkSafariSocket) {
+            return;
+          }
+
+          const sockets = window.__calliopeScratchLinkProxySockets || new Map();
+          window.__calliopeScratchLinkProxySockets = sockets;
+
+          const postProxyMessage = function (message) {
+            if (window.parent === window) {
+              return;
+            }
+
+            window.parent.postMessage(
+              {
+                source: 'calliope-scratch-gui',
+                version: 2,
+                instanceId,
+                type: SCRATCH_LINK_PROXY_REQUEST,
+                data: message,
+                meta: {
+                  via: 'calliope-scratch-gui-bootstrap'
+                }
+              },
+              parentOrigin
+            );
+          };
+
+          class CalliopeScratchLinkProxySocket {
+            static isSafariHelperCompatible() {
+              return true;
+            }
+
+            constructor(type) {
+              this._type = type;
+              this._id = `calliope-scratchlink-${Math.random().toString(36).slice(2, 11)}`;
+              this._isOpen = false;
+              this._onOpen = null;
+              this._onClose = null;
+              this._onError = null;
+              this._handleMessage = null;
+            }
+
+            open() {
+              sockets.set(this._id, this);
+              postProxyMessage({
+                socketId: this._id,
+                action: 'open',
+                type: this._type
+              });
+            }
+
+            close() {
+              if (!sockets.has(this._id)) {
+                return;
+              }
+
+              postProxyMessage({
+                socketId: this._id,
+                action: 'close'
+              });
+              this._isOpen = false;
+              sockets.delete(this._id);
+            }
+
+            sendMessage(message) {
+              postProxyMessage({
+                socketId: this._id,
+                action: 'send',
+                message
+              });
+            }
+
+            setOnOpen(fn) {
+              this._onOpen = fn;
+            }
+
+            setOnClose(fn) {
+              this._onClose = fn;
+            }
+
+            setOnError(fn) {
+              this._onError = fn;
+            }
+
+            setHandleMessage(fn) {
+              this._handleMessage = fn;
+            }
+
+            isOpen() {
+              return this._isOpen;
+            }
+          }
+
+          Scratch.ScratchLinkSafariSocket = CalliopeScratchLinkProxySocket;
+        };
 
         if (isEmbedded) {
+          window.__calliopeForceScratchLink = true;
+          installScratchLinkProxy();
           return;
         }
 

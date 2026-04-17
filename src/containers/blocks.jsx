@@ -52,6 +52,9 @@ import {
     postParentMessage
 } from '../lib/iframe.js';
 
+const SCRATCH_LINK_PROXY_REQUEST = 'blocks.scratchLinkProxy.request';
+const SCRATCH_LINK_PROXY_EVENT = 'blocks.scratchLinkProxy.event';
+
 const addFunctionListener = (object, property, callback) => {
     const oldFn = object[property];
     object[property] = function (...args) {
@@ -99,7 +102,8 @@ class Blocks extends React.Component {
             'flushPendingProjectLoad',
             'handleWindowMessage',
             'postProjectToParent',
-            'sendReadyToParent'
+            'sendReadyToParent',
+            'installScratchLinkProxy'
         ]);
 
         this.ScratchBlocks.prompt = this.handlePromptStart;
@@ -113,6 +117,7 @@ class Blocks extends React.Component {
         this.bridgeLastLoadedProject = null;
         this.bridgeLastPostedProject = null;
         this.bridgeReadySent = false;
+        this.scratchLinkProxyInstalled = false;
         this.postProjectToParent = debounce(this.postProjectToParent, 120);
 
         this.state = {
@@ -217,6 +222,7 @@ class Blocks extends React.Component {
         }
 
         if (this.iframeBridge.enabled) {
+            this.installScratchLinkProxy();
             window.addEventListener('message', this.handleWindowMessage);
 
             const checkReady = () => {
@@ -452,6 +458,54 @@ class Blocks extends React.Component {
             return;
         }
 
+        if (message.type === SCRATCH_LINK_PROXY_EVENT) {
+            const proxyEvent = message.data;
+            if (!proxyEvent || typeof proxyEvent !== 'object') {
+                return;
+            }
+
+            const sockets = window.__calliopeScratchLinkProxySockets;
+            const socketId = proxyEvent.socketId;
+            const eventType = proxyEvent.event;
+            const proxySocket = sockets && typeof socketId === 'string' ? sockets.get(socketId) : null;
+
+            if (!proxySocket || typeof eventType !== 'string') {
+                return;
+            }
+
+            switch (eventType) {
+            case 'open':
+                proxySocket._isOpen = true;
+                if (typeof proxySocket._onOpen === 'function') {
+                    proxySocket._onOpen();
+                }
+                return;
+
+            case 'close':
+                proxySocket._isOpen = false;
+                sockets.delete(socketId);
+                if (typeof proxySocket._onClose === 'function') {
+                    proxySocket._onClose(proxyEvent.payload);
+                }
+                return;
+
+            case 'error':
+                if (typeof proxySocket._onError === 'function') {
+                    proxySocket._onError(proxyEvent.payload);
+                }
+                return;
+
+            case 'message':
+                if (typeof proxySocket._handleMessage === 'function') {
+                    proxySocket._handleMessage(proxyEvent.payload);
+                }
+                return;
+
+            default:
+                return;
+            }
+        }
+
         if (message.type !== 'blocks.updateProject' || !message.data) {
             return;
         }
@@ -512,6 +566,111 @@ class Blocks extends React.Component {
             }),
             this.iframeBridge
         );
+    }
+
+    installScratchLinkProxy() {
+        if (!this.iframeBridge.enabled || this.scratchLinkProxyInstalled) {
+            return;
+        }
+
+        const Scratch = self.Scratch || (self.Scratch = {});
+        if (Scratch.ScratchLinkSafariSocket) {
+            this.scratchLinkProxyInstalled = true;
+            return;
+        }
+
+        const sockets = window.__calliopeScratchLinkProxySockets || new Map();
+        window.__calliopeScratchLinkProxySockets = sockets;
+
+        class CalliopeScratchLinkProxySocket {
+            static isSafariHelperCompatible() {
+                return true;
+            }
+
+            constructor(type) {
+                this._type = type;
+                this._id = `calliope-scratchlink-${Math.random().toString(36).slice(2, 11)}`;
+                this._isOpen = false;
+                this._onOpen = null;
+                this._onClose = null;
+                this._onError = null;
+                this._handleMessage = null;
+            }
+
+            open() {
+                sockets.set(this._id, this);
+                postParentMessage(
+                    createBridgeMessage({
+                        type: SCRATCH_LINK_PROXY_REQUEST,
+                        data: {
+                            socketId: this._id,
+                            action: 'open',
+                            type: this._type
+                        },
+                        instanceId: getIframeBridgeConfig().instanceId
+                    }),
+                    getIframeBridgeConfig()
+                );
+            }
+
+            close() {
+                if (!sockets.has(this._id)) {
+                    return;
+                }
+
+                postParentMessage(
+                    createBridgeMessage({
+                        type: SCRATCH_LINK_PROXY_REQUEST,
+                        data: {
+                            socketId: this._id,
+                            action: 'close'
+                        },
+                        instanceId: getIframeBridgeConfig().instanceId
+                    }),
+                    getIframeBridgeConfig()
+                );
+                this._isOpen = false;
+                sockets.delete(this._id);
+            }
+
+            sendMessage(message) {
+                postParentMessage(
+                    createBridgeMessage({
+                        type: SCRATCH_LINK_PROXY_REQUEST,
+                        data: {
+                            socketId: this._id,
+                            action: 'send',
+                            message
+                        },
+                        instanceId: getIframeBridgeConfig().instanceId
+                    }),
+                    getIframeBridgeConfig()
+                );
+            }
+
+            setOnOpen(fn) {
+                this._onOpen = fn;
+            }
+
+            setOnClose(fn) {
+                this._onClose = fn;
+            }
+
+            setOnError(fn) {
+                this._onError = fn;
+            }
+
+            setHandleMessage(fn) {
+                this._handleMessage = fn;
+            }
+
+            isOpen() {
+                return this._isOpen;
+            }
+        }
+
+        Scratch.ScratchLinkSafariSocket = CalliopeScratchLinkProxySocket;
+        this.scratchLinkProxyInstalled = true;
     }
 
     postProjectToParent() {

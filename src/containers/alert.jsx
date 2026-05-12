@@ -7,6 +7,7 @@ import AlertComponent from '../components/alerts/alert.jsx';
 import {openConnectionModal} from '../reducers/modals';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
 import {manualUpdateProject} from '../reducers/project-state';
+import {getIframeBridgeConfig} from '../lib/iframe';
 
 class Alert extends React.Component {
     constructor (props) {
@@ -20,6 +21,21 @@ class Alert extends React.Component {
         this.props.onCloseAlert(this.props.index);
     }
     handleOnReconnect () {
+        // In embedded/iframeBridge mode the parent app owns connection
+        // state. Opening Scratch's connection modal would be redundant
+        // and confusing — re-scan instead, which goes through the
+        // parent-side proxy without any modal UI.
+        const cfg = getIframeBridgeConfig();
+        if (cfg.enabled && this.props.vm) {
+            try {
+                this.props.vm.scanForPeripheral(this.props.extensionId);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.warn('[iframeBridge] alert reconnect scan failed', err);
+            }
+            this.handleOnCloseAlert();
+            return;
+        }
         this.props.onOpenConnectionModal(this.props.extensionId);
         this.handleOnCloseAlert();
     }
@@ -61,7 +77,9 @@ class Alert extends React.Component {
     }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => ({
+    vm: state.scratchGui.vm
+});
 
 const mapDispatchToProps = dispatch => ({
     onOpenConnectionModal: id => {
@@ -88,7 +106,8 @@ Alert.propTypes = {
     onSaveNow: PropTypes.func,
     showDownload: PropTypes.bool,
     showReconnect: PropTypes.bool,
-    showSaveNow: PropTypes.bool
+    showSaveNow: PropTypes.bool,
+    vm: PropTypes.object
 };
 
 export default connect(

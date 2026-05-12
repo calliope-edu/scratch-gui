@@ -966,6 +966,15 @@ class Blocks extends React.Component {
         this.setState(p);
     }
     handleConnectionModalStart(extensionId) {
+        // In embedded/iframeBridge mode the host app owns peripheral
+        // connection state — it shows its own connect UI and runs the BLE
+        // socket via the parent-side proxy. Skipping Scratch's "Connect
+        // Calliope" modal here avoids a redundant overlay on top of the
+        // host's already-connected widget. Triggered from both category
+        // selection and the status-button refresh path.
+        if (this.iframeBridge.enabled) {
+            return;
+        }
         this.props.onOpenConnectionModal(extensionId);
     }
     handleStatusButtonUpdate() {

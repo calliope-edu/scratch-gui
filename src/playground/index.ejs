@@ -122,6 +122,23 @@
         };
 
         if (isEmbedded) {
+          // Force scratch-vm to use its `BLE` (ScratchLink) class instead
+          // of `WebBLE`. The published scratch-vm we ship doesn't check
+          // `__calliopeForceScratchLink` yet; it picks WebBLE whenever
+          // `navigator.bluetooth` is truthy, which is always in Chrome.
+          // WebBLE would do its OWN navigator.bluetooth.requestDevice and
+          // bypass our parent-side proxy, so we hide the API from the
+          // iframe. The parent (host app) keeps full access — only this
+          // iframe is muted.
+          try {
+            Object.defineProperty(navigator, 'bluetooth', {
+              value: undefined,
+              configurable: true,
+              writable: true
+            });
+          } catch (e) {
+            try { delete navigator.bluetooth; } catch (e2) {}
+          }
           window.__calliopeForceScratchLink = true;
           installScratchLinkProxy();
           return;

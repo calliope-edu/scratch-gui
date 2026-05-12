@@ -33,6 +33,8 @@
           window.__calliopeScratchLinkProxySockets = sockets;
 
           const postProxyMessage = function (message) {
+            // eslint-disable-next-line no-console
+            console.info('%c[bridge-iframe]%c → parent', 'color: #f97316; font-weight: bold;', 'color: inherit;', message);
             if (window.parent === window) {
               return;
             }
@@ -119,7 +121,20 @@
           }
 
           Scratch.ScratchLinkSafariSocket = CalliopeScratchLinkProxySocket;
+          // eslint-disable-next-line no-console
+          console.info(
+            '%c[bridge-iframe]%c proxy installed (Scratch.ScratchLinkSafariSocket replaced)',
+            'color: #f97316; font-weight: bold;', 'color: inherit;'
+          );
         };
+
+        // eslint-disable-next-line no-console
+        console.info(
+          '%c[bridge-iframe]%c bootstrap: embedded=' + isEmbedded +
+            ', parent=' + (window.parent === window ? 'self' : 'host') +
+            ', params=' + window.location.search,
+          'color: #f97316; font-weight: bold;', 'color: inherit;'
+        );
 
         if (isEmbedded) {
           // Force scratch-vm to use its `BLE` (ScratchLink) class instead
@@ -130,17 +145,67 @@
           // bypass our parent-side proxy, so we hide the API from the
           // iframe. The parent (host app) keeps full access — only this
           // iframe is muted.
+          var suppressMethod = 'none';
           try {
             Object.defineProperty(navigator, 'bluetooth', {
               value: undefined,
               configurable: true,
               writable: true
             });
+            suppressMethod = 'defineProperty';
           } catch (e) {
-            try { delete navigator.bluetooth; } catch (e2) {}
+            try {
+              delete navigator.bluetooth;
+              suppressMethod = 'delete';
+            } catch (e2) {}
           }
+          // If defineProperty silently failed (some Chrome builds expose
+          // navigator.bluetooth as a non-configurable getter on the
+          // prototype), redefine on Navigator.prototype as a fallback.
+          if (navigator.bluetooth) {
+            try {
+              Object.defineProperty(Navigator.prototype, 'bluetooth', {
+                value: undefined,
+                configurable: true
+              });
+              suppressMethod = 'proto-defineProperty';
+            } catch (e3) {}
+          }
+          // eslint-disable-next-line no-console
+          console.info(
+            '%c[bridge-iframe]%c navigator.bluetooth suppression: ' + suppressMethod +
+              ' → ' + (navigator.bluetooth === undefined ? 'OK (undefined)' : 'FAILED (' + typeof navigator.bluetooth + ')'),
+            'color: #f97316; font-weight: bold;', 'color: inherit;'
+          );
           window.__calliopeForceScratchLink = true;
           installScratchLinkProxy();
+          // Ping the parent so its bridge log shows we're alive even
+          // before the user touches anything. The parent treats this
+          // as informational; ignores in production.
+          try {
+            const parentOrigin = String(params.get('parentOrigin') || '').trim() || '*';
+            window.parent.postMessage(
+              {
+                source: 'calliope-scratch-gui',
+                version: 2,
+                instanceId: String(params.get('instance') || '').trim() || null,
+                type: 'blocks.bridge.hello',
+                data: {
+                  navigatorBluetoothSuppressed: !navigator.bluetooth,
+                  navigatorBluetoothType: typeof navigator.bluetooth,
+                  suppressMethod: suppressMethod,
+                  forceScratchLink: !!window.__calliopeForceScratchLink,
+                  hasScratchLinkSafariSocket: !!(self.Scratch && self.Scratch.ScratchLinkSafariSocket),
+                  href: window.location.href
+                },
+                meta: { via: 'calliope-scratch-gui-bootstrap' }
+              },
+              parentOrigin
+            );
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.warn('[bridge-iframe] hello postMessage failed', e);
+          }
           return;
         }
 

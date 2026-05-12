@@ -926,6 +926,45 @@ class Blocks extends React.Component {
         if (toolboxXML) {
             this.props.updateToolboxState(toolboxXML);
         }
+
+        // In embedded mode the host app owns connection state. Auto-scan
+        // for any peripheral-flow extension as soon as it's loaded so
+        // the iframe acts like it's already connected — no "Connect"
+        // button visible to the user, no clicks required to bring the
+        // proxy socket up. The parent-side WidgetScratchLinkSocket
+        // synthesises discover/connect success regardless of whether the
+        // widget has a real BLE/USB device, so this is safe at any time.
+        if (
+            this.iframeBridge &&
+            this.iframeBridge.enabled &&
+            categoryInfo &&
+            categoryInfo.id &&
+            !this.bridgeAutoScannedExtensions
+        ) {
+            this.bridgeAutoScannedExtensions = new Set();
+        }
+        if (
+            this.iframeBridge &&
+            this.iframeBridge.enabled &&
+            categoryInfo &&
+            categoryInfo.id &&
+            this.bridgeAutoScannedExtensions &&
+            !this.bridgeAutoScannedExtensions.has(categoryInfo.id)
+        ) {
+            const extensionMeta = extensionData.find(
+                ext => ext.extensionId === categoryInfo.id
+            );
+            if (extensionMeta && extensionMeta.launchPeripheralConnectionFlow) {
+                this.bridgeAutoScannedExtensions.add(categoryInfo.id);
+                // eslint-disable-next-line no-console
+                console.info(
+                    '%c[bridge-iframe]%c auto-scan on extension load',
+                    'color: #f97316; font-weight: bold;', 'color: inherit;',
+                    {extensionId: categoryInfo.id}
+                );
+                this.handleConnectionModalStart(categoryInfo.id);
+            }
+        }
     }
     handleBlocksInfoUpdate(categoryInfo) {
         // @todo Later we should replace this to avoid all the warnings from redefining blocks.
@@ -935,6 +974,27 @@ class Blocks extends React.Component {
         const extension = extensionData.find(
             ext => ext.extensionId === categoryId
         );
+        const launches = Boolean(extension && extension.launchPeripheralConnectionFlow);
+        // eslint-disable-next-line no-console
+        console.info(
+            '%c[bridge-iframe]%c handleCategorySelected',
+            'color: #f97316; font-weight: bold;', 'color: inherit;',
+            {categoryId, launches, found: !!extension}
+        );
+        // Mirror to parent's bridge log.
+        if (typeof window !== 'undefined' && window.parent !== window) {
+            try {
+                const search = new URLSearchParams(window.location.search);
+                window.parent.postMessage({
+                    source: 'calliope-scratch-gui',
+                    version: 2,
+                    instanceId: search.get('instance') || null,
+                    type: 'blocks.bridge.debug',
+                    data: {event: 'handleCategorySelected', categoryId, launches, found: !!extension},
+                    meta: {via: 'blocks.jsx'}
+                }, search.get('parentOrigin') || '*');
+            } catch (e) { /* ignore */ }
+        }
         if (extension && extension.launchPeripheralConnectionFlow) {
             this.handleConnectionModalStart(categoryId);
         }
@@ -966,6 +1026,34 @@ class Blocks extends React.Component {
         this.setState(p);
     }
     handleConnectionModalStart(extensionId) {
+        const enabled = !!(this.iframeBridge && this.iframeBridge.enabled);
+        // eslint-disable-next-line no-console
+        console.info(
+            '%c[bridge-iframe]%c handleConnectionModalStart',
+            'color: #f97316; font-weight: bold;', 'color: inherit;',
+            { extensionId, iframeBridgeEnabled: enabled }
+        );
+        // Echo to parent so the host's bridge log shows this trigger
+        // without the user having to open the iframe's own DevTools.
+        if (typeof window !== 'undefined' && window.parent !== window) {
+            try {
+                const search = new URLSearchParams(window.location.search);
+                window.parent.postMessage({
+                    source: 'calliope-scratch-gui',
+                    version: 2,
+                    instanceId: search.get('instance') || null,
+                    type: 'blocks.bridge.debug',
+                    data: {
+                        event: 'handleConnectionModalStart',
+                        extensionId,
+                        iframeBridgeEnabled: enabled,
+                        hasVm: !!(this.props && this.props.vm),
+                        hasScratchLinkSafariSocket: !!(self.Scratch && self.Scratch.ScratchLinkSafariSocket)
+                    },
+                    meta: {via: 'blocks.jsx'}
+                }, search.get('parentOrigin') || '*');
+            } catch (e) { /* ignore */ }
+        }
         // In embedded/iframeBridge mode the host app owns peripheral
         // connection state — it shows its own connect UI and routes the
         // BLE socket through the parent-side proxy. We skip Scratch's

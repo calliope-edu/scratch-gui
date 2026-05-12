@@ -967,12 +967,59 @@ class Blocks extends React.Component {
     }
     handleConnectionModalStart(extensionId) {
         // In embedded/iframeBridge mode the host app owns peripheral
-        // connection state — it shows its own connect UI and runs the BLE
-        // socket via the parent-side proxy. Skipping Scratch's "Connect
-        // Calliope" modal here avoids a redundant overlay on top of the
-        // host's already-connected widget. Triggered from both category
-        // selection and the status-button refresh path.
+        // connection state — it shows its own connect UI and routes the
+        // BLE socket through the parent-side proxy. We skip Scratch's
+        // own "Connect Calliope" modal here, but we still need to kick
+        // off the extension's scan/connect cycle: otherwise the scratch-vm
+        // BLE socket never opens and blocks-runtime commands never reach
+        // the device.
+        //
+        // Sequence:
+        //   1. vm.scanForPeripheral → extension calls `new BLE(...)`
+        //      which opens the ScratchLinkSafariSocket (our proxy).
+        //   2. Proxy responds with `userDidPickPeripheral` synthetically.
+        //   3. We auto-call vm.connectPeripheral with that id so the
+        //      extension finishes wiring up. Without step 3 the scan
+        //      stops at "picked peripheral" and the user is stuck.
         if (this.iframeBridge.enabled) {
+            const vm = this.props.vm;
+            if (!vm || !vm.runtime) {
+                return;
+            }
+            if (vm.getPeripheralIsConnected(extensionId)) {
+                return;
+            }
+            const RuntimeCtor = vm.runtime.constructor;
+            const onPicked = peripherals => {
+                const ids = peripherals ? Object.keys(peripherals) : [];
+                if (!ids.length) {
+                    return;
+                }
+                vm.runtime.removeListener(
+                    RuntimeCtor.USER_PICKED_PERIPHERAL,
+                    onPicked
+                );
+                try {
+                    vm.connectPeripheral(extensionId, ids[0]);
+                } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.warn('[iframeBridge] connectPeripheral failed', err);
+                }
+            };
+            vm.runtime.addListener(
+                RuntimeCtor.USER_PICKED_PERIPHERAL,
+                onPicked
+            );
+            try {
+                vm.scanForPeripheral(extensionId);
+            } catch (err) {
+                vm.runtime.removeListener(
+                    RuntimeCtor.USER_PICKED_PERIPHERAL,
+                    onPicked
+                );
+                // eslint-disable-next-line no-console
+                console.warn('[iframeBridge] scanForPeripheral failed', err);
+            }
             return;
         }
         this.props.onOpenConnectionModal(extensionId);

@@ -1,18 +1,15 @@
 /* eslint-disable linebreak-style, eol-last */
-const TRUE_VALUES = ['1', 'true', 'yes', 'on', 'embedded'];
 
-const normalizeFlag = value =>
-    TRUE_VALUES.includes(
-        String(value || '')
-            .trim()
-            .toLowerCase()
-    );
+/**
+ * Bridge between this Scratch iframe and the embedding host (e.g.
+ * calliope-campus). Bridge is on whenever the page is framed — no URL
+ * opt-in needed. Standalone tabs see no bridge behaviour.
+ */
 
 const getSearchParams = () => {
     if (typeof window === 'undefined') {
         return new URLSearchParams();
     }
-
     return new URLSearchParams(window.location.search || '');
 };
 
@@ -26,17 +23,10 @@ export const getIframeBridgeConfig = () => {
     }
 
     const params = getSearchParams();
-    const enabled =
-        window.parent !== window &&
-        (normalizeFlag(params.get('embedded')) ||
-            normalizeFlag(params.get('iframeBridge')) ||
-            normalizeFlag(params.get('controller')) ||
-            String(params.get('mode') || '')
-                .trim()
-                .toLowerCase() === 'embedded');
+    const enabled = window.parent && window.parent !== window;
 
     return {
-        enabled,
+        enabled: Boolean(enabled),
         instanceId: String(params.get('instance') || '').trim() || null,
         parentOrigin: String(params.get('parentOrigin') || '').trim() || '*'
     };
@@ -67,7 +57,6 @@ export const postParentMessage = (
     ) {
         return;
     }
-
     window.parent.postMessage(message, config.parentOrigin || '*');
 };
 
@@ -78,11 +67,9 @@ export const isParentMessage = (
     if (typeof window === 'undefined' || !config.enabled) {
         return false;
     }
-
     if (event.source !== window.parent) {
         return false;
     }
-
     if (
         config.parentOrigin &&
         config.parentOrigin !== '*' &&
@@ -90,7 +77,6 @@ export const isParentMessage = (
     ) {
         return false;
     }
-
     return true;
 };
 
@@ -101,10 +87,8 @@ export const isBridgePayloadForInstance = (
     if (!payload || typeof payload !== 'object') {
         return false;
     }
-
     if (!config.instanceId || !payload.instanceId) {
         return true;
     }
-
     return payload.instanceId === config.instanceId;
 };

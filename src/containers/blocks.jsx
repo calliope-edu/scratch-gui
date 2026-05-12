@@ -52,8 +52,6 @@ import {
     postParentMessage
 } from '../lib/iframe.js';
 
-const SCRATCH_LINK_PROXY_REQUEST = 'blocks.scratchLinkProxy.request';
-const SCRATCH_LINK_PROXY_EVENT = 'blocks.scratchLinkProxy.event';
 
 const addFunctionListener = (object, property, callback) => {
     const oldFn = object[property];
@@ -102,8 +100,7 @@ class Blocks extends React.Component {
             'flushPendingProjectLoad',
             'handleWindowMessage',
             'postProjectToParent',
-            'sendReadyToParent',
-            'installScratchLinkProxy'
+            'sendReadyToParent'
         ]);
 
         this.ScratchBlocks.prompt = this.handlePromptStart;
@@ -117,7 +114,6 @@ class Blocks extends React.Component {
         this.bridgeLastLoadedProject = null;
         this.bridgeLastPostedProject = null;
         this.bridgeReadySent = false;
-        this.scratchLinkProxyInstalled = false;
         this.postProjectToParent = debounce(this.postProjectToParent, 120);
 
         this.state = {
@@ -222,7 +218,9 @@ class Blocks extends React.Component {
         }
 
         if (this.iframeBridge.enabled) {
-            this.installScratchLinkProxy();
+            // The calliope-controller fork uses CalliopeRemote (a postMessage
+            // IO class in scratch-vm) for device communication — no
+            // Scratch-Link proxy installation needed here.
             window.addEventListener('message', this.handleWindowMessage);
 
             const checkReady = () => {
@@ -458,54 +456,6 @@ class Blocks extends React.Component {
             return;
         }
 
-        if (message.type === SCRATCH_LINK_PROXY_EVENT) {
-            const proxyEvent = message.data;
-            if (!proxyEvent || typeof proxyEvent !== 'object') {
-                return;
-            }
-
-            const sockets = window.__calliopeScratchLinkProxySockets;
-            const socketId = proxyEvent.socketId;
-            const eventType = proxyEvent.event;
-            const proxySocket = sockets && typeof socketId === 'string' ? sockets.get(socketId) : null;
-
-            if (!proxySocket || typeof eventType !== 'string') {
-                return;
-            }
-
-            switch (eventType) {
-            case 'open':
-                proxySocket._isOpen = true;
-                if (typeof proxySocket._onOpen === 'function') {
-                    proxySocket._onOpen();
-                }
-                return;
-
-            case 'close':
-                proxySocket._isOpen = false;
-                sockets.delete(socketId);
-                if (typeof proxySocket._onClose === 'function') {
-                    proxySocket._onClose(proxyEvent.payload);
-                }
-                return;
-
-            case 'error':
-                if (typeof proxySocket._onError === 'function') {
-                    proxySocket._onError(proxyEvent.payload);
-                }
-                return;
-
-            case 'message':
-                if (typeof proxySocket._handleMessage === 'function') {
-                    proxySocket._handleMessage(proxyEvent.payload);
-                }
-                return;
-
-            default:
-                return;
-            }
-        }
-
         if (message.type !== 'blocks.updateProject' || !message.data) {
             return;
         }
@@ -566,111 +516,6 @@ class Blocks extends React.Component {
             }),
             this.iframeBridge
         );
-    }
-
-    installScratchLinkProxy() {
-        if (!this.iframeBridge.enabled || this.scratchLinkProxyInstalled) {
-            return;
-        }
-
-        const Scratch = self.Scratch || (self.Scratch = {});
-        if (Scratch.ScratchLinkSafariSocket) {
-            this.scratchLinkProxyInstalled = true;
-            return;
-        }
-
-        const sockets = window.__calliopeScratchLinkProxySockets || new Map();
-        window.__calliopeScratchLinkProxySockets = sockets;
-
-        class CalliopeScratchLinkProxySocket {
-            static isSafariHelperCompatible() {
-                return true;
-            }
-
-            constructor(type) {
-                this._type = type;
-                this._id = `calliope-scratchlink-${Math.random().toString(36).slice(2, 11)}`;
-                this._isOpen = false;
-                this._onOpen = null;
-                this._onClose = null;
-                this._onError = null;
-                this._handleMessage = null;
-            }
-
-            open() {
-                sockets.set(this._id, this);
-                postParentMessage(
-                    createBridgeMessage({
-                        type: SCRATCH_LINK_PROXY_REQUEST,
-                        data: {
-                            socketId: this._id,
-                            action: 'open',
-                            type: this._type
-                        },
-                        instanceId: getIframeBridgeConfig().instanceId
-                    }),
-                    getIframeBridgeConfig()
-                );
-            }
-
-            close() {
-                if (!sockets.has(this._id)) {
-                    return;
-                }
-
-                postParentMessage(
-                    createBridgeMessage({
-                        type: SCRATCH_LINK_PROXY_REQUEST,
-                        data: {
-                            socketId: this._id,
-                            action: 'close'
-                        },
-                        instanceId: getIframeBridgeConfig().instanceId
-                    }),
-                    getIframeBridgeConfig()
-                );
-                this._isOpen = false;
-                sockets.delete(this._id);
-            }
-
-            sendMessage(message) {
-                postParentMessage(
-                    createBridgeMessage({
-                        type: SCRATCH_LINK_PROXY_REQUEST,
-                        data: {
-                            socketId: this._id,
-                            action: 'send',
-                            message
-                        },
-                        instanceId: getIframeBridgeConfig().instanceId
-                    }),
-                    getIframeBridgeConfig()
-                );
-            }
-
-            setOnOpen(fn) {
-                this._onOpen = fn;
-            }
-
-            setOnClose(fn) {
-                this._onClose = fn;
-            }
-
-            setOnError(fn) {
-                this._onError = fn;
-            }
-
-            setHandleMessage(fn) {
-                this._handleMessage = fn;
-            }
-
-            isOpen() {
-                return this._isOpen;
-            }
-        }
-
-        Scratch.ScratchLinkSafariSocket = CalliopeScratchLinkProxySocket;
-        this.scratchLinkProxyInstalled = true;
     }
 
     postProjectToParent() {
@@ -927,42 +772,36 @@ class Blocks extends React.Component {
             this.props.updateToolboxState(toolboxXML);
         }
 
-        // In embedded mode the host app owns connection state. Auto-scan
-        // for any peripheral-flow extension as soon as it's loaded so
-        // the iframe acts like it's already connected — no "Connect"
-        // button visible to the user, no clicks required to bring the
-        // proxy socket up. The parent-side WidgetScratchLinkSocket
-        // synthesises discover/connect success regardless of whether the
-        // widget has a real BLE/USB device, so this is safe at any time.
+        // In controller mode the host owns connection state. Trigger
+        // scanForPeripheral once per peripheral-flow extension so
+        // CalliopeRemote installs itself and scratch-vm marks the
+        // peripheral as connected — no "Connect" button shown, no
+        // user click required. CalliopeRemote never opens a chooser
+        // or touches Web Bluetooth; it just postMessages.
         if (
             this.iframeBridge &&
             this.iframeBridge.enabled &&
             categoryInfo &&
-            categoryInfo.id &&
-            !this.bridgeAutoScannedExtensions
+            categoryInfo.id
         ) {
-            this.bridgeAutoScannedExtensions = new Set();
-        }
-        if (
-            this.iframeBridge &&
-            this.iframeBridge.enabled &&
-            categoryInfo &&
-            categoryInfo.id &&
-            this.bridgeAutoScannedExtensions &&
-            !this.bridgeAutoScannedExtensions.has(categoryInfo.id)
-        ) {
-            const extensionMeta = extensionData.find(
-                ext => ext.extensionId === categoryInfo.id
-            );
-            if (extensionMeta && extensionMeta.launchPeripheralConnectionFlow) {
-                this.bridgeAutoScannedExtensions.add(categoryInfo.id);
-                // eslint-disable-next-line no-console
-                console.info(
-                    '%c[bridge-iframe]%c auto-scan on extension load',
-                    'color: #f97316; font-weight: bold;', 'color: inherit;',
-                    {extensionId: categoryInfo.id}
+            if (!this.controllerScanned) {
+                this.controllerScanned = new Set();
+            }
+            if (!this.controllerScanned.has(categoryInfo.id)) {
+                const extensionMeta = extensionData.find(
+                    ext => ext.extensionId === categoryInfo.id
                 );
-                this.handleConnectionModalStart(categoryInfo.id);
+                if (extensionMeta && extensionMeta.launchPeripheralConnectionFlow) {
+                    this.controllerScanned.add(categoryInfo.id);
+                    try {
+                        if (this.props.vm) {
+                            this.props.vm.scanForPeripheral(categoryInfo.id);
+                        }
+                    } catch (err) {
+                        // eslint-disable-next-line no-console
+                        console.warn('[controller] auto-scan failed', err);
+                    }
+                }
             }
         }
     }
@@ -974,27 +813,6 @@ class Blocks extends React.Component {
         const extension = extensionData.find(
             ext => ext.extensionId === categoryId
         );
-        const launches = Boolean(extension && extension.launchPeripheralConnectionFlow);
-        // eslint-disable-next-line no-console
-        console.info(
-            '%c[bridge-iframe]%c handleCategorySelected',
-            'color: #f97316; font-weight: bold;', 'color: inherit;',
-            {categoryId, launches, found: !!extension}
-        );
-        // Mirror to parent's bridge log.
-        if (typeof window !== 'undefined' && window.parent !== window) {
-            try {
-                const search = new URLSearchParams(window.location.search);
-                window.parent.postMessage({
-                    source: 'calliope-scratch-gui',
-                    version: 2,
-                    instanceId: search.get('instance') || null,
-                    type: 'blocks.bridge.debug',
-                    data: {event: 'handleCategorySelected', categoryId, launches, found: !!extension},
-                    meta: {via: 'blocks.jsx'}
-                }, search.get('parentOrigin') || '*');
-            } catch (e) { /* ignore */ }
-        }
         if (extension && extension.launchPeripheralConnectionFlow) {
             this.handleConnectionModalStart(categoryId);
         }
@@ -1026,87 +844,36 @@ class Blocks extends React.Component {
         this.setState(p);
     }
     handleConnectionModalStart(extensionId) {
-        const enabled = !!(this.iframeBridge && this.iframeBridge.enabled);
-        // eslint-disable-next-line no-console
-        console.info(
-            '%c[bridge-iframe]%c handleConnectionModalStart',
-            'color: #f97316; font-weight: bold;', 'color: inherit;',
-            { extensionId, iframeBridgeEnabled: enabled }
-        );
-        // Echo to parent so the host's bridge log shows this trigger
-        // without the user having to open the iframe's own DevTools.
-        if (typeof window !== 'undefined' && window.parent !== window) {
-            try {
-                const search = new URLSearchParams(window.location.search);
-                window.parent.postMessage({
-                    source: 'calliope-scratch-gui',
-                    version: 2,
-                    instanceId: search.get('instance') || null,
-                    type: 'blocks.bridge.debug',
-                    data: {
-                        event: 'handleConnectionModalStart',
-                        extensionId,
-                        iframeBridgeEnabled: enabled,
-                        hasVm: !!(this.props && this.props.vm),
-                        hasScratchLinkSafariSocket: !!(self.Scratch && self.Scratch.ScratchLinkSafariSocket)
-                    },
-                    meta: {via: 'blocks.jsx'}
-                }, search.get('parentOrigin') || '*');
-            } catch (e) { /* ignore */ }
-        }
-        // In embedded/iframeBridge mode the host app owns peripheral
-        // connection state — it shows its own connect UI and routes the
-        // BLE socket through the parent-side proxy. We skip Scratch's
-        // own "Connect Calliope" modal here, but we still need to kick
-        // off the extension's scan/connect cycle: otherwise the scratch-vm
-        // BLE socket never opens and blocks-runtime commands never reach
-        // the device.
-        //
-        // Sequence:
-        //   1. vm.scanForPeripheral → extension calls `new BLE(...)`
-        //      which opens the ScratchLinkSafariSocket (our proxy).
-        //   2. Proxy responds with `userDidPickPeripheral` synthetically.
-        //   3. We auto-call vm.connectPeripheral with that id so the
-        //      extension finishes wiring up. Without step 3 the scan
-        //      stops at "picked peripheral" and the user is stuck.
+        // In embedded/controller mode the host app owns the device
+        // connection. We don't open Scratch's connection modal — instead
+        // we trigger vm.scanForPeripheral, which constructs our
+        // CalliopeRemote IO class. CalliopeRemote immediately marks
+        // the peripheral as connected (no real BLE/serial work happens
+        // here; the host does that behind the scenes). Also notify the
+        // host so it can surface a toast saying "connection is managed
+        // outside the editor" if the user clicked the status icon.
         if (this.iframeBridge.enabled) {
             const vm = this.props.vm;
-            if (!vm || !vm.runtime) {
-                return;
-            }
-            if (vm.getPeripheralIsConnected(extensionId)) {
-                return;
-            }
-            const RuntimeCtor = vm.runtime.constructor;
-            const onPicked = peripherals => {
-                const ids = peripherals ? Object.keys(peripherals) : [];
-                if (!ids.length) {
-                    return;
-                }
-                vm.runtime.removeListener(
-                    RuntimeCtor.USER_PICKED_PERIPHERAL,
-                    onPicked
-                );
+            if (typeof window !== 'undefined' && window.parent !== window) {
                 try {
-                    vm.connectPeripheral(extensionId, ids[0]);
+                    const search = new URLSearchParams(window.location.search);
+                    window.parent.postMessage({
+                        source: 'calliope-scratch-gui',
+                        version: 2,
+                        instanceId: search.get('instance') || null,
+                        type: 'blocks.statusButtonClicked',
+                        data: {extensionId},
+                        meta: {via: 'blocks.jsx'}
+                    }, search.get('parentOrigin') || '*');
+                } catch (e) { /* ignore */ }
+            }
+            if (vm && !vm.getPeripheralIsConnected(extensionId)) {
+                try {
+                    vm.scanForPeripheral(extensionId);
                 } catch (err) {
                     // eslint-disable-next-line no-console
-                    console.warn('[iframeBridge] connectPeripheral failed', err);
+                    console.warn('[controller] scanForPeripheral failed', err);
                 }
-            };
-            vm.runtime.addListener(
-                RuntimeCtor.USER_PICKED_PERIPHERAL,
-                onPicked
-            );
-            try {
-                vm.scanForPeripheral(extensionId);
-            } catch (err) {
-                vm.runtime.removeListener(
-                    RuntimeCtor.USER_PICKED_PERIPHERAL,
-                    onPicked
-                );
-                // eslint-disable-next-line no-console
-                console.warn('[iframeBridge] scanForPeripheral failed', err);
             }
             return;
         }

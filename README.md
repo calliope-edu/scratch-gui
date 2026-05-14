@@ -25,6 +25,10 @@ Open a Command Prompt or Terminal in the repository and run:
 ```bash
 npm start
 ```
+or for https
+```bash
+PORT=8601 npm start -- --https
+```
 Then go to [http://localhost:8601/](http://localhost:8601/) - the playground outputs the default GUI component
 
 ## Developing alongside other Scratch repositories

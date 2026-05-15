@@ -32,6 +32,7 @@ import WebGlModal from '../../containers/webgl-modal.jsx';
 import Alerts from '../../containers/alerts.jsx';
 import DragLayer from '../../containers/drag-layer.jsx';
 import ConnectionModal from '../../containers/connection-modal.jsx';
+import {getIframeBridgeConfig} from '../../lib/iframe';
 import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
 
 import layout, {STAGE_SIZE_MODES} from '../../lib/layout-constants';
@@ -197,7 +198,7 @@ const GUIComponent = props => {
                         {alertsVisible ? (
                             <Alerts className={styles.alertsContainer} />
                         ) : null}
-                        {connectionModalVisible ? (
+                        {connectionModalVisible && !getIframeBridgeConfig().enabled ? (
                             <ConnectionModal vm={vm} />
                         ) : null}
                         {costumeLibraryVisible ? (

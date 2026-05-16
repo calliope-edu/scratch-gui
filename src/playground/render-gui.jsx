@@ -63,10 +63,9 @@ export default appTarget => {
         }
     }
 
-    if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
-        // Warn before navigating away
-        window.onbeforeunload = () => true;
-    }
+    // Upstream installed an unconditional window.onbeforeunload here to warn
+    // before navigating away. We don't want a native confirm on every reload
+    // — the campus owns project persistence — so it's left off.
 
     ReactDOM.render(
         // important: this is checking whether `simulateScratchDesktop` is truthy, not just defined!

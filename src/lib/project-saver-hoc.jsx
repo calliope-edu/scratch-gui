@@ -49,16 +49,15 @@ const ProjectSaverHOC = function (WrappedComponent) {
             super(props);
             bindAll(this, [
                 'getProjectThumbnail',
-                'leavePageConfirm',
                 'tryToAutoSave'
             ]);
         }
         componentWillMount () {
-            if (typeof window === 'object') {
-                // Note: it might be better to use a listener instead of assigning onbeforeunload;
-                // but then it'd be hard to turn this listening off in our tests
-                window.onbeforeunload = e => this.leavePageConfirm(e);
-            }
+            // The "unsaved changes" beforeunload prompt was removed for the
+            // calliope-campus embedded use-case — the host (campus) owns
+            // project persistence via the iframe bridge, so the upstream
+            // gating on this.props.projectChanged isn't meaningful here and
+            // the native confirm just annoys students on every reload.
 
             // Allow the GUI consumer to pass in a function to receive a trigger
             // for triggering thumbnail or whole project saves.
@@ -122,14 +121,6 @@ const ProjectSaverHOC = function (WrappedComponent) {
             // Remove project thumbnailer function since the components are unmounting
             this.props.onSetProjectThumbnailer(null);
             this.props.onSetProjectSaver(null);
-        }
-        leavePageConfirm (e) {
-            if (this.props.projectChanged) {
-                // both methods of returning a value may be necessary for browser compatibility
-                (e || window.event).returnValue = true;
-                return true;
-            }
-            return; // Returning undefined prevents the prompt from coming up
         }
         clearAutoSaveTimeout () {
             if (this.props.autoSaveTimeoutId !== null) {

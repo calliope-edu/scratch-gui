@@ -858,7 +858,7 @@ class Blocks extends React.Component {
                 try {
                     const search = new URLSearchParams(window.location.search);
                     window.parent.postMessage({
-                        source: 'calliope-scratch-gui',
+                        source: 'calliope-blocks-gui',
                         version: 2,
                         instanceId: search.get('instance') || null,
                         type: 'blocks.statusButtonClicked',

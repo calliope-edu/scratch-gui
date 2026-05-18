@@ -38,7 +38,7 @@ export const createBridgeMessage = ({
     instanceId = null,
     meta = {}
 }) => ({
-    source: 'calliope-scratch-gui',
+    source: 'calliope-blocks-gui',
     version: 2,
     instanceId,
     type,

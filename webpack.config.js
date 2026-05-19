@@ -1,4 +1,5 @@
 const defaultsDeep = require('lodash.defaultsdeep');
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -25,7 +26,11 @@ const base = {
         disableHostCheck: true,
         contentBase: path.resolve(__dirname, 'build'),
         host: '0.0.0.0',
-        port: process.env.PORT || 8601
+        port: process.env.PORT || 8601,
+        https: fs.existsSync(path.resolve(__dirname, 'certs/localhost.pem')) ? {
+            key: fs.readFileSync(path.resolve(__dirname, 'certs/localhost-key.pem')),
+            cert: fs.readFileSync(path.resolve(__dirname, 'certs/localhost.pem'))
+        } : false
     },
     output: {
         library: 'GUI',

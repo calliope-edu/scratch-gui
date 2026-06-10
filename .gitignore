@@ -21,8 +21,13 @@ npm-*
 # Other generated source
 /src/generated
 
-# Downloaded during "npm install"
-/static/microbit
+# Downloaded during "npm install": the upstream scratch-microbit hex (and the
+# DAL blocks-dal.hex). But the Calliope v3 blocks runtime + its version metadata
+# are committed deliverables (see firmware/BUILD-PROVENANCE.md) — shipped WITH
+# the editor, not rebuilt at deploy — so track those two explicitly.
+/static/microbit/*
+!/static/microbit/blocks.hex
+!/static/microbit/blocks-version.json
 
 # HTTPS certification
 *.pem

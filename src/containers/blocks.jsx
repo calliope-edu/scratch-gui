@@ -100,7 +100,9 @@ class Blocks extends React.Component {
             'flushPendingProjectLoad',
             'handleWindowMessage',
             'postProjectToParent',
-            'sendReadyToParent'
+            'sendReadyToParent',
+            'ensureControllerConnection',
+            'respondRuntimeHex'
         ]);
 
         this.ScratchBlocks.prompt = this.handlePromptStart;
@@ -226,6 +228,9 @@ class Blocks extends React.Component {
             const checkReady = () => {
                 if (this.workspace && this.props.vm.runtime.targets.length > 0) {
                     this.sendReadyToParent();
+                    // Controller mode connects the peripheral itself; don't wait
+                    // for a project that happens to include the extension.
+                    this.ensureControllerConnection();
                 } else {
                     setTimeout(checkReady, 100);
                 }
@@ -456,6 +461,16 @@ class Blocks extends React.Component {
             return;
         }
 
+        // The blocks-runtime hex ships WITH this editor (static/microbit/), so
+        // the host (campus) asks the iframe for it at flash time instead of
+        // bundling its own copy — that keeps the firmware version-locked to the
+        // editor deployment. We read our own same-origin static asset and post
+        // the bytes back.
+        if (message.type === 'blocks.requestRuntimeHex') {
+            this.respondRuntimeHex(message);
+            return;
+        }
+
         if (message.type !== 'blocks.updateProject' || !message.data) {
             return;
         }
@@ -491,6 +506,9 @@ class Blocks extends React.Component {
                 this.props.vm.refreshWorkspace();
                 this.bridgeLastLoadedProject = nextLoad.serializedProject;
                 this.bridgeLastPostedProject = nextLoad.serializedProject;
+                // A loaded project may or may not include the calliopeMini
+                // extension; ensure the controller connection regardless.
+                this.ensureControllerConnection();
             })
             .catch(error => {
                 log.error(error);
@@ -516,6 +534,102 @@ class Blocks extends React.Component {
             }),
             this.iframeBridge
         );
+    }
+    respondRuntimeHex(message) {
+        // Serve the blocks-runtime hex bundled with this editor build
+        // (static/microbit/blocks.hex | blocks-dal.hex). Fetched same-origin
+        // here, then posted to the host which flashes it via the connection
+        // widget. The reqId correlates the host's pending request.
+        //
+        // NOTE: promise-chain, NOT async/await — scratch-gui transpiles to ES5
+        // without regenerator-runtime, so an async function throws
+        // "regeneratorRuntime is not defined" at module load and kills the whole
+        // editor bundle. Match the .then() style used elsewhere in this file.
+        const variant = message.variant === 'dal' ? 'dal' : 'codal';
+        const file = variant === 'dal' ? 'blocks-dal.hex' : 'blocks.hex';
+        const reply = (hex, error) => {
+            postParentMessage(
+                createBridgeMessage({
+                    type: 'blocks.runtimeHex',
+                    instanceId: this.iframeBridge.instanceId,
+                    data: {reqId: message.reqId, variant, hex: hex || '', error: error || null}
+                }),
+                this.iframeBridge
+            );
+        };
+        // `no-store`: always fetch the freshly-built hex. Without it the browser
+        // can serve a cached older hex, so a re-flash silently writes stale
+        // firmware (e.g. one without the latest runtime-version byte).
+        fetch(`/static/microbit/${file}`, {cache: 'no-store'})
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`${res.status} ${res.statusText}`);
+                }
+                return res.text();
+            })
+            .then(hex => reply(hex, null))
+            .catch(err => {
+                // eslint-disable-next-line no-console
+                console.warn(`[controller] runtime hex fetch failed (${file})`, err);
+                reply('', (err && err.message) ? err.message : String(err));
+            });
+    }
+    ensureControllerConnection() {
+        // Controller mode: the iframe must connect the Calliope peripheral
+        // itself — there is no chooser and no user click. The normal trigger is
+        // handleExtensionAdded → vm.scanForPeripheral, but that only fires if
+        // the loaded project actually includes the calliopeMini extension. A
+        // project with no serialized extensions (e.g. a fresh project) never
+        // loads it, so scan() never runs, CalliopeRemote is never constructed,
+        // and the iframe stays completely silent (no calliope.* traffic) even
+        // though the host widget independently detects the device program.
+        // Make the connect deterministic + idempotent: ensure the extension is
+        // loaded, then scan once. Shares the controllerScanned guard with
+        // handleExtensionAdded so the two paths never double-scan.
+        if (!this.iframeBridge.enabled || !this.props.vm) {
+            return;
+        }
+        const vm = this.props.vm;
+        const extensionId = 'calliopeMini';
+        if (!this.controllerScanned) {
+            this.controllerScanned = new Set();
+        }
+        const startScan = () => {
+            if (this.controllerScanned.has(extensionId)) {
+                return;
+            }
+            try {
+                if (vm.getPeripheralIsConnected(extensionId)) {
+                    return;
+                }
+                // eslint-disable-next-line no-console
+                console.info(`[controller] ensureControllerConnection → scanForPeripheral(${extensionId})`);
+                this.controllerScanned.add(extensionId);
+                vm.scanForPeripheral(extensionId);
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.warn('[controller] ensureControllerConnection scan failed', err);
+            }
+        };
+        try {
+            const em = vm.extensionManager;
+            if (em && !em.isExtensionLoaded(extensionId)) {
+                // eslint-disable-next-line no-console
+                console.info(`[controller] ${extensionId} extension not loaded; loading it for controller mode`);
+                Promise.resolve(em.loadExtensionURL(extensionId))
+                    .then(startScan)
+                    .catch(err => {
+                        // eslint-disable-next-line no-console
+                        console.warn(`[controller] loadExtensionURL(${extensionId}) failed`, err);
+                        startScan();
+                    });
+            } else {
+                startScan();
+            }
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('[controller] ensureControllerConnection failed', err);
+        }
     }
 
     postProjectToParent() {
@@ -795,6 +909,8 @@ class Blocks extends React.Component {
                     this.controllerScanned.add(categoryInfo.id);
                     try {
                         if (this.props.vm) {
+                            // eslint-disable-next-line no-console
+                            console.info(`[controller] handleExtensionAdded → scanForPeripheral(${categoryInfo.id})`);
                             this.props.vm.scanForPeripheral(categoryInfo.id);
                         }
                     } catch (err) {

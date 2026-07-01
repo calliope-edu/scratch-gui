@@ -1,5 +1,5 @@
 {
   "_note": "Blocks-runtime version of the bundled hex(es), read by the editor (calliopeMini extension) to detect an outdated device hex. Bump in lockstep with the firmware BLOCKS_RUNTIME_VERSION #define when rebuilding the hex. 'codal' = blocks.hex (mini v3); 'dal' = blocks-dal.hex (mini v1/v2). 'dal' stays 0 until blocks-dal.hex is rebuilt from the DAL tree with the data[3] version byte (else a DAL device would show 'outdated' and flashing the still-v0 DAL hex wouldn't clear it).",
-  "codal": 1,
+  "codal": 2,
   "dal": 0
 }

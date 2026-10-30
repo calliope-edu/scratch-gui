@@ -164,7 +164,8 @@ module.exports = [
             'blocksonly': './src/playground/blocks-only.jsx',
             'compatibilitytesting':
                 './src/playground/compatibility-testing.jsx',
-            'player': './src/playground/player.jsx'
+            'player': './src/playground/player.jsx',
+            'render': './src/playground/render.js'
         },
         output: {
             path: path.resolve(__dirname, 'build'),
@@ -220,6 +221,13 @@ module.exports = [
                 template: 'src/playground/index.ejs',
                 filename: 'player.html',
                 title: 'Scratch 3.0 GUI: Player Example'
+            }),
+            // Blocks to SVG for hosts that only show a program (render.js).
+            new HtmlWebpackPlugin({
+                chunks: ['lib.min', 'render'],
+                template: 'src/playground/index.ejs',
+                filename: 'render.html',
+                title: 'Calliope mini Blocks: Render'
             }),
             new CopyWebpackPlugin({
                 patterns: [

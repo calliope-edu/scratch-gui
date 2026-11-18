@@ -560,7 +560,11 @@ class Blocks extends React.Component {
         // `no-store`: always fetch the freshly-built hex. Without it the browser
         // can serve a cached older hex, so a re-flash silently writes stale
         // firmware (e.g. one without the latest runtime-version byte).
-        fetch(`/static/microbit/${file}`, {cache: 'no-store'})
+        // From where this build is served: / on its own host, /editors/blocks/
+        // in Calliope Campus (CAMPUS_DIST, webpack.config.js).
+        // eslint-disable-next-line camelcase, no-undef
+        const base = __webpack_public_path__ || '/';
+        fetch(`${base}static/microbit/${file}`, {cache: 'no-store'})
             .then(res => {
                 if (!res.ok) {
                     throw new Error(`${res.status} ${res.statusText}`);

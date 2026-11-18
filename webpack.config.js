@@ -19,9 +19,16 @@ const assetsManifest = require('./src/assetsManifest.json');
 
 const STATIC_PATH = process.env.STATIC_PATH || '/static';
 
+// Calliope Campus serves the editor itself, on its own origin under
+// /editors/blocks/ (.github/workflows/campus-dist.yml). CAMPUS_DIST=1 builds it
+// for that: scripts, chunks and assets load from PUBLIC_PATH, and the build has
+// no service worker, web app manifest or source maps.
+const CAMPUS_DIST = Boolean(process.env.CAMPUS_DIST);
+const PUBLIC_PATH = process.env.PUBLIC_PATH || '';
+
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-    devtool: 'cheap-module-source-map',
+    devtool: CAMPUS_DIST ? false : 'cheap-module-source-map',
     devServer: {
         disableHostCheck: true,
         contentBase: path.resolve(__dirname, 'build'),
@@ -169,7 +176,8 @@ module.exports = [
         },
         output: {
             path: path.resolve(__dirname, 'build'),
-            filename: '[name].js'
+            filename: '[name].js',
+            publicPath: PUBLIC_PATH
         },
         module: {
             rules: base.module.rules.concat([
@@ -202,23 +210,27 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
                 template: 'src/playground/index.ejs',
+                serviceWorker: !CAMPUS_DIST,
                 title: 'Calliope mini'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'blocksonly'],
                 template: 'src/playground/index.ejs',
+                serviceWorker: !CAMPUS_DIST,
                 filename: 'blocks-only.html',
                 title: 'Scratch 3.0 GUI: Blocks Only Example'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'compatibilitytesting'],
                 template: 'src/playground/index.ejs',
+                serviceWorker: !CAMPUS_DIST,
                 filename: 'compatibility-testing.html',
                 title: 'Scratch 3.0 GUI: Compatibility Testing'
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'player'],
                 template: 'src/playground/index.ejs',
+                serviceWorker: !CAMPUS_DIST,
                 filename: 'player.html',
                 title: 'Scratch 3.0 GUI: Player Example'
             }),
@@ -226,6 +238,7 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'render'],
                 template: 'src/playground/index.ejs',
+                serviceWorker: !CAMPUS_DIST,
                 filename: 'render.html',
                 title: 'Calliope mini Blocks: Render'
             }),
@@ -255,7 +268,7 @@ module.exports = [
                     }
                 ]
             }),
-            new WorkboxPlugin.GenerateSW({
+            ...(CAMPUS_DIST ? [] : [new WorkboxPlugin.GenerateSW({
                 clientsClaim: true,
                 skipWaiting: true,
                 additionalManifestEntries: assetsManifest,
@@ -286,7 +299,7 @@ module.exports = [
                         purpose: 'maskable'
                     }
                 ]
-            })
+            })])
         ])
     })
 ].concat(

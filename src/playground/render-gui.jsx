@@ -4,6 +4,7 @@ import {compose} from 'redux';
 
 import AppStateHOC from '../lib/app-state-hoc.jsx';
 import GUI from '../containers/gui.jsx';
+import {logBuildInfoWhenEmbedded} from '../lib/build-info.js';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 
@@ -26,6 +27,7 @@ const handleTelemetryModalOptOut = () => {
  */
 export default appTarget => {
     GUI.setAppElement(appTarget);
+    logBuildInfoWhenEmbedded();
 
     const params = new URLSearchParams(window.location.search);
     const flag = value => ['1', 'true', 'yes'].includes(String(value || '').toLowerCase());

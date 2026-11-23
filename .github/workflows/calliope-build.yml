@@ -21,8 +21,10 @@ name: calliope-build
 #
 # Each build branch is ready to serve as it is: a Cloudflare Pages project on it
 # needs no build command and the repository root as its output directory. Each
-# commit carries BUILD.json (at the root and in editors/blocks/) naming the
-# source commits (this repo and scratch-vm) and ref. Campus pins a commit of build-live as its editors/blocks
+# commit carries BUILD.json (at the root and in editors/blocks/; format in
+# docs/build-info.md) naming channel, version, source commit and the scratch-vm
+# commit; both builds compile the same values in, for the settings menu's
+# version line. Campus pins a commit of build-live as its editors/blocks
 # submodule and moves the pin itself, so nothing built here reaches
 # campus.calliope.cc unreviewed.
 #
@@ -57,15 +59,28 @@ jobs:
           node-version: 22
           cache: npm
 
-      # package-lock.json resolves scratch-vm over ssh; the repo is public,
-      # so fetch it over https instead.
-      - run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-
       # With its install scripts: prepublish fetches the micro:bit hex the
       # build imports (src/generated/microbit-hex-url.cjs).
       - run: npm ci --no-audit --no-fund
         env:
           CHROMEDRIVER_SKIP_DOWNLOAD: 'true'
+
+      # One set of build values for both builds and their BUILD.json
+      # (scripts/build-info.js; webpack.config.js compiles them in).
+      - name: Build info
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          channel=dev
+          if [ "$REF_TYPE" = tag ]; then channel=live; fi
+          {
+            echo "BUILD_CHANNEL=$channel"
+            echo "BUILD_VERSION=$REF_NAME"
+            echo "BUILD_COMMIT=$SHA"
+            echo "BUILD_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } >> "$GITHUB_ENV"
 
       - name: Build for the site root
         run: npm run build && mkdir -p "$RUNNER_TEMP/out" && cp -r build/. "$RUNNER_TEMP/out/"
@@ -94,13 +109,12 @@ jobs:
           target=build-dev
           if [ "$REF_TYPE" = tag ]; then target=build-live; fi
           short=${SOURCE_SHA:0:7}
-          vm_sha=$(node -p "require('./package-lock.json').packages['node_modules/scratch-vm'].resolved.split('#')[1]")
-          built=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           out="$RUNNER_TEMP/out"
-          printf '{\n  "name": "%s",\n  "ref": "%s",\n  "source": "%s",\n  "scratchVm": "%s",\n  "base": "%s",\n  "built": "%s"\n}\n' \
-            "$name" "$SOURCE_REF" "$SOURCE_SHA" "$vm_sha" "/" "$built" > "$out/BUILD.json"
-          printf '{\n  "name": "%s",\n  "ref": "%s",\n  "source": "%s",\n  "scratchVm": "%s",\n  "base": "%s",\n  "built": "%s"\n}\n' \
-            "$name" "$SOURCE_REF" "$SOURCE_SHA" "$vm_sha" "/editors/$name/" "$built" > "$out/editors/$name/BUILD.json"
+          # The same values both builds compiled in (step "Build info").
+          node scripts/build-info.js > "$out/BUILD.json"
+          cp "$out/BUILD.json" "$out/editors/$name/BUILD.json"
+          cat "$out/BUILD.json"
+          vm_sha=$(node -p "require('$out/BUILD.json').libs['scratch-vm']")
           mkdir publish && cd publish
           git init -q
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"

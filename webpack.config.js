@@ -16,6 +16,7 @@ const postcssVars = require('postcss-simple-vars');
 const postcssImport = require('postcss-import');
 
 const assetsManifest = require('./src/assetsManifest.json');
+const {buildInfo} = require('./scripts/build-info');
 
 const STATIC_PATH = process.env.STATIC_PATH || '/static';
 
@@ -205,7 +206,10 @@ module.exports = [
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
                 'process.env.DEBUG': Boolean(process.env.DEBUG),
-                'process.env.GA_ID': `"${process.env.GA_ID || 'UA-000000-01'}"`
+                'process.env.GA_ID': `"${process.env.GA_ID || 'UA-000000-01'}"`,
+                // The build's version (src/lib/build-info.js, docs/build-info.md):
+                // the same values the workflow writes to BUILD.json.
+                'process.env.BUILD_INFO': JSON.stringify(JSON.stringify(buildInfo()))
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],

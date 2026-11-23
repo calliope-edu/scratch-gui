@@ -1210,6 +1210,30 @@ exports.locals = {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./src/components/menu-bar/build-info-line.css":
+/*!************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--5-1!./node_modules/postcss-loader/src??postcss!./src/components/menu-bar/build-info-line.css ***!
+  \************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "/* The menu's own text color (white on the menu's color), never a color of its own. */\n.build-info-line_build-info_HFLaZ {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n    -webkit-flex-direction: column;\n        -ms-flex-direction: column;\n            flex-direction: column;\n    padding: .375rem 10px;\n    font-size: .6875rem;\n    font-weight: normal;\n    line-height: 1.4;\n    white-space: nowrap;\n    cursor: text;\n    -webkit-user-select: text;\n       -moz-user-select: text;\n        -ms-user-select: text;\n            user-select: text;\n}\n.build-info-line_line_1Jk8W {\n    display: -webkit-box;\n    display: -webkit-flex;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n    -webkit-align-items: center;\n        -ms-flex-align: center;\n            align-items: center;\n    gap: .375rem;\n}\n.build-info-line_channel_1f-Bs {\n    border: 1px solid currentColor;\n    border-radius: 3px;\n    padding: 0 .25rem;\n    line-height: 1.3;\n}\n", ""]);
+
+// exports
+exports.locals = {
+	"build-info": "build-info-line_build-info_HFLaZ",
+	"buildInfo": "build-info-line_build-info_HFLaZ",
+	"line": "build-info-line_line_1Jk8W",
+	"channel": "build-info-line_channel_1f-Bs"
+};
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./src/components/menu-bar/community-button.css":
 /*!*************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--5-1!./node_modules/postcss-loader/src??postcss!./src/components/menu-bar/community-button.css ***!
@@ -9841,6 +9865,102 @@ AuthorInfo.propTypes = {
 
 /***/ }),
 
+/***/ "./src/components/menu-bar/build-info-line.css":
+/*!*****************************************************!*\
+  !*** ./src/components/menu-bar/build-info-line.css ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--5-1!../../../node_modules/postcss-loader/src??postcss!./build-info-line.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./src/components/menu-bar/build-info-line.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./src/components/menu-bar/build-info-line.jsx":
+/*!*****************************************************!*\
+  !*** ./src/components/menu-bar/build-info-line.jsx ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _lib_build_info_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../lib/build-info.js */ "./src/lib/build-info.js");
+/* harmony import */ var _build_info_line_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./build-info-line.css */ "./src/components/menu-bar/build-info-line.css");
+/* harmony import */ var _build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_build_info_line_css__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+
+/**
+ * The build's version at the bottom of the settings menu, below a separator,
+ * as every Calliope editor shows it (docs/build-info.md): live
+ * "calliope-v1.0.0 · 7ea9962", dev a framed "dev" mark and
+ * "calliope-main · a1b2c3d", and a second line with the calliope-ui and widget
+ * states in editors that carry them.
+ * @param {object} props - the build info to show (default: this build's)
+ * @returns {React.ReactElement} the menu entry
+ */
+var BuildInfoLine = function BuildInfoLine(_ref) {
+  var className = _ref.className,
+    _ref$info = _ref.info,
+    info = _ref$info === void 0 ? _lib_build_info_js__WEBPACK_IMPORTED_MODULE_2__["buildInfo"] : _ref$info;
+  var packages = Object(_lib_build_info_js__WEBPACK_IMPORTED_MODULE_2__["packagesLine"])(info);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", {
+    className: className ? "".concat(_build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default.a.buildInfo, " ").concat(className) : _build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default.a.buildInfo,
+    "data-testid": "build-info"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+    className: _build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default.a.line
+  }, info.channel !== 'live' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+    className: _build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default.a.channel
+  }, info.channel), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, Object(_lib_build_info_js__WEBPACK_IMPORTED_MODULE_2__["versionLine"])(info))), packages && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+    className: _build_info_line_css__WEBPACK_IMPORTED_MODULE_3___default.a.line
+  }, packages));
+};
+BuildInfoLine.propTypes = {
+  className: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+  info: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.shape({
+    channel: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+    version: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+    commit: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+    ui: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.shape({
+      tag: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+      commit: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string
+    }),
+    widget: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.shape({
+      tag: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string,
+      commit: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string
+    })
+  })
+};
+/* harmony default export */ __webpack_exports__["default"] = (BuildInfoLine);
+
+/***/ }),
+
 /***/ "./src/components/menu-bar/calliope.svg":
 /*!**********************************************!*\
   !*** ./src/components/menu-bar/calliope.svg ***!
@@ -11590,17 +11710,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_intl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-intl */ "./node_modules/react-intl/lib/index.es.js");
-/* harmony import */ var _language_menu_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./language-menu.jsx */ "./src/components/menu-bar/language-menu.jsx");
-/* harmony import */ var _menu_bar_menu_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./menu-bar-menu.jsx */ "./src/components/menu-bar/menu-bar-menu.jsx");
-/* harmony import */ var _theme_menu_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./theme-menu.jsx */ "./src/components/menu-bar/theme-menu.jsx");
-/* harmony import */ var _menu_menu_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../menu/menu.jsx */ "./src/components/menu/menu.jsx");
-/* harmony import */ var _menu_bar_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./menu-bar.css */ "./src/components/menu-bar/menu-bar.css");
-/* harmony import */ var _menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_menu_bar_css__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _settings_menu_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./settings-menu.css */ "./src/components/menu-bar/settings-menu.css");
-/* harmony import */ var _settings_menu_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_settings_menu_css__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./dropdown-caret.svg */ "./src/components/menu-bar/dropdown-caret.svg");
-/* harmony import */ var _icon_settings_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./icon--settings.svg */ "./src/components/menu-bar/icon--settings.svg");
+/* harmony import */ var _build_info_line_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./build-info-line.jsx */ "./src/components/menu-bar/build-info-line.jsx");
+/* harmony import */ var _language_menu_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./language-menu.jsx */ "./src/components/menu-bar/language-menu.jsx");
+/* harmony import */ var _menu_bar_menu_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./menu-bar-menu.jsx */ "./src/components/menu-bar/menu-bar-menu.jsx");
+/* harmony import */ var _theme_menu_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./theme-menu.jsx */ "./src/components/menu-bar/theme-menu.jsx");
+/* harmony import */ var _menu_menu_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../menu/menu.jsx */ "./src/components/menu/menu.jsx");
+/* harmony import */ var _menu_bar_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./menu-bar.css */ "./src/components/menu-bar/menu-bar.css");
+/* harmony import */ var _menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_menu_bar_css__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _settings_menu_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./settings-menu.css */ "./src/components/menu-bar/settings-menu.css");
+/* harmony import */ var _settings_menu_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_settings_menu_css__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./dropdown-caret.svg */ "./src/components/menu-bar/dropdown-caret.svg");
+/* harmony import */ var _icon_settings_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./icon--settings.svg */ "./src/components/menu-bar/icon--settings.svg");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -11621,27 +11743,27 @@ var SettingsMenu = function SettingsMenu(_ref) {
     onRequestOpen = _ref.onRequestOpen,
     settingsMenuOpen = _ref.settingsMenuOpen;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-    className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default.a.menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default.a.hoverable, _menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default.a.themeMenu, _defineProperty({}, _menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default.a.active, settingsMenuOpen)),
+    className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(_menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default.a.menuBarItem, _menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default.a.hoverable, _menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default.a.themeMenu, _defineProperty({}, _menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default.a.active, settingsMenuOpen)),
     onMouseUp: onRequestOpen
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("img", {
-    src: _icon_settings_svg__WEBPACK_IMPORTED_MODULE_11__["default"]
+    src: _icon_settings_svg__WEBPACK_IMPORTED_MODULE_12__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", {
-    className: _settings_menu_css__WEBPACK_IMPORTED_MODULE_9___default.a.dropdownLabel
+    className: _settings_menu_css__WEBPACK_IMPORTED_MODULE_10___default.a.dropdownLabel
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_intl__WEBPACK_IMPORTED_MODULE_3__["FormattedMessage"], {
     defaultMessage: "Settings",
     id: "gui.menuBar.settings"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("img", {
-    src: _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_10__["default"]
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_menu_bar_menu_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_8___default.a.menuBarMenu,
+    src: _dropdown_caret_svg__WEBPACK_IMPORTED_MODULE_11__["default"]
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_menu_bar_menu_jsx__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    className: _menu_bar_css__WEBPACK_IMPORTED_MODULE_9___default.a.menuBarMenu,
     open: settingsMenuOpen,
     place: isRtl ? 'left' : 'right',
     onRequestClose: onRequestClose
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_7__["MenuSection"], null, canChangeLanguage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_language_menu_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_8__["MenuSection"], null, canChangeLanguage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_language_menu_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
     onRequestCloseSettings: onRequestClose
-  }), canChangeTheme && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_theme_menu_jsx__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }), canChangeTheme && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_theme_menu_jsx__WEBPACK_IMPORTED_MODULE_7__["default"], {
     onRequestCloseSettings: onRequestClose
-  }))));
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_menu_menu_jsx__WEBPACK_IMPORTED_MODULE_8__["MenuSection"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_build_info_line_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], null))));
 };
 SettingsMenu.propTypes = {
   canChangeLanguage: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool,
@@ -30917,6 +31039,99 @@ __webpack_require__.r(__webpack_exports__);
     image.setAttribute('src', imageUrl);
   });
 });
+
+/***/ }),
+
+/***/ "./src/lib/build-info.js":
+/*!*******************************!*\
+  !*** ./src/lib/build-info.js ***!
+  \*******************************/
+/*! exports provided: buildInfo, logBuildInfoWhenEmbedded, packagesLine, parseBuildInfo, shortCommit, versionLine */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buildInfo", function() { return buildInfo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "logBuildInfoWhenEmbedded", function() { return logBuildInfoWhenEmbedded; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "packagesLine", function() { return packagesLine; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseBuildInfo", function() { return parseBuildInfo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "shortCommit", function() { return shortCommit; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "versionLine", function() { return versionLine; });
+// Which version this build is: the same values as the BUILD.json next to it
+// (docs/build-info.md). webpack.config.js compiles them in from
+// scripts/build-info.js as process.env.BUILD_INFO.
+
+var fallback = {
+  channel: 'local',
+  version: 'local',
+  commit: '',
+  builtAt: '',
+  ui: null,
+  widget: null,
+  libs: {}
+};
+
+/**
+ * @param {string|undefined} json - the compiled-in BUILD_INFO
+ * @returns {object} the build info, the local fallback where there is none
+ */
+var parseBuildInfo = function parseBuildInfo(json) {
+  if (!json) return fallback;
+  try {
+    return Object.assign({}, fallback, JSON.parse(json));
+  } catch (e) {
+    return fallback;
+  }
+};
+var buildInfo = parseBuildInfo("{\"channel\":\"dev\",\"version\":\"calliope-main\",\"commit\":\"c471325074f276c1b385eb0fba78a50b301326ca\",\"builtAt\":\"2026-11-23T22:27:37Z\",\"ui\":null,\"widget\":null,\"libs\":{\"scratch-vm\":\"9115be5e796b340e87cd8ce0df5dc30575213c37\"}}");
+var shortCommit = function shortCommit(commit) {
+  return (commit || '').slice(0, 7);
+};
+var joined = function joined() {
+  for (var _len = arguments.length, parts = new Array(_len), _key = 0; _key < _len; _key++) {
+    parts[_key] = arguments[_key];
+  }
+  return parts.filter(Boolean).join(' · ');
+};
+
+/**
+ * @param {object} info - the build info
+ * @returns {string} "calliope-v1.0.0 · 7ea9962" (live), "calliope-main · a1b2c3d" (dev)
+ */
+var versionLine = function versionLine(info) {
+  return joined(info.version, shortCommit(info.commit));
+};
+var packageState = function packageState(label, state) {
+  return state ? "".concat(label, " ").concat(state.tag || shortCommit(state.commit)) : '';
+};
+
+/**
+ * @param {object} info - the build info
+ * @returns {?string} "UI v0.3.0 · Widget v0.4.1" (live), "UI 6faa0c1 · Widget 9e8d7c6"
+ * (dev), or null without calliope-ui and the widget (Blocks today)
+ */
+var packagesLine = function packagesLine(info) {
+  return joined(packageState('UI', info.ui), packageState('Widget', info.widget)) || null;
+};
+
+/**
+ * The embedded Campus variant (/editors/blocks/, or any page in a frame) shows
+ * no version line to its host, so it names its build in the console once.
+ * @param {object} info - the build info
+ * @param {string} pathname - the page's path
+ * @param {boolean} framed - whether the page runs in a frame
+ * @returns {boolean} whether it logged
+ */
+var logBuildInfoWhenEmbedded = function logBuildInfoWhenEmbedded() {
+  var info = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : buildInfo;
+  var pathname = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.location.pathname;
+  var framed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : window.self !== window.top;
+  if (!framed && !pathname.startsWith('/editors/')) return false;
+  // eslint-disable-next-line no-console
+  console.info("[blocks-editor] ".concat(info.channel, " ").concat(versionLine(info)), info);
+  return true;
+};
+
 
 /***/ }),
 

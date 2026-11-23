@@ -1,8 +1,11 @@
 {
-  "name": "blocks",
-  "ref": "calliope-main",
-  "source": "464d7bd77e72d820d90bc0db2cd7240703f53763",
-  "scratchVm": "17cda8b0676861703dd59384a0c632a8b13ca2de",
-  "base": "/editors/blocks/",
-  "built": "2026-11-23T16:12:33Z"
+  "channel": "dev",
+  "version": "calliope-main",
+  "commit": "c471325074f276c1b385eb0fba78a50b301326ca",
+  "builtAt": "2026-11-23T22:27:37Z",
+  "ui": null,
+  "widget": null,
+  "libs": {
+    "scratch-vm": "9115be5e796b340e87cd8ce0df5dc30575213c37"
+  }
 }

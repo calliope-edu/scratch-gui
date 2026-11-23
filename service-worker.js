@@ -85,28 +85,28 @@ define(['./workbox-74015f45'], (function (workbox) { 'use strict';
     "revision": "f9959495d430b281fe7b907b2b37b81c"
   }, {
     "url": "chunks/blocksonly.js",
-    "revision": "69e3993a43149488161f9c4d1dd66683"
+    "revision": "5a13235d2de05b2d07f60b2ecb4a897e"
   }, {
     "url": "chunks/blocksonly.js.map",
-    "revision": "f1aee3ebbb81832b300375026e0fabc9"
+    "revision": "5eea7ff9ddba26292f84482e4bc06af0"
   }, {
     "url": "chunks/compatibilitytesting.js",
-    "revision": "1c070b9c796e3ee5055981e52fd6b674"
+    "revision": "04839c185c5eefa24043fe049796abf8"
   }, {
     "url": "chunks/compatibilitytesting.js.map",
-    "revision": "9037395e684f823e89ddd4c5ab2fddbd"
+    "revision": "39a183399c1f12005919a94fea8fee4f"
   }, {
     "url": "chunks/gui.js",
-    "revision": "59abaedbc13b160cc6e4806067eb9630"
+    "revision": "5aefa8c7b9463508a2f04404064568cd"
   }, {
     "url": "chunks/gui.js.map",
-    "revision": "632739c2843c3dea896c37bc8da4d5c2"
+    "revision": "527aa5f65bc247dad908c5d1d89dbebf"
   }, {
     "url": "chunks/player.js",
-    "revision": "f5f3b3a95540c7cbcf4e8da1301abe3f"
+    "revision": "e2bacb3710a971f5114b2d35b075ceb3"
   }, {
     "url": "chunks/player.js.map",
-    "revision": "bcd1a01c85cbcf62984087f711da44a8"
+    "revision": "6400538b9b9a957b462bcdcd891285cc"
   }, {
     "url": "chunks/render.js",
     "revision": "4f6c9ee0cbf63ab44047e5f8a6b5af1e"

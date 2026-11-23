@@ -1,0 +1,47 @@
+{
+  "icons": [
+    {
+      "src": "icon_512x512.1a12d5df2aea441a6d4cd367d05b07ce.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon_512x512.1a12d5df2aea441a6d4cd367d05b07ce.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_384x384.0fb6edb9db789ae373fac9658a9da61c.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_256x256.8188e198e3aee10a2543843bcfa46e3c.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_192x192.3a987b4fd461a87ded650e279429a1f2.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_128x128.44543aee4dd5d174522c331349c2cdfc.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_96x96.850c9984e1180036765565ed53aae6c9.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    }
+  ],
+  "name": "Calliope mini",
+  "short_name": "Calliope mini",
+  "orientation": "any",
+  "display": "standalone",
+  "start_url": ".",
+  "description": "Extendable Scratch3 mod",
+  "background_color": "#ffffff"
+}

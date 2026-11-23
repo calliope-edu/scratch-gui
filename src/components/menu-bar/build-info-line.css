@@ -1,0 +1,25 @@
+/* The menu's own text color (white on the menu's color), never a color of its own. */
+.build-info {
+    display: flex;
+    flex-direction: column;
+    padding: .375rem 10px;
+    font-size: .6875rem;
+    font-weight: normal;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: text;
+    user-select: text;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+}
+
+.channel {
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    padding: 0 .25rem;
+    line-height: 1.3;
+}

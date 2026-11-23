@@ -1,0 +1,8 @@
+{
+	"setup": "npx cross-env CHROMEDRIVER_SKIP_DOWNLOAD=true npm ci --no-audit --no-fund",
+	"checks": ["npm run test:lint", "npx jest test/unit"],
+	"language": "en",
+	"app": {
+		"run": "A React app built with webpack (webpack-dev-server), no backend, no login. Start it in the background with `npx cross-env PORT=<port> npm start`, taking a free port from 8620 upwards (8601 is the default and often taken; other workspaces run their own). It serves `http://localhost:<port>/` once compiled, a minute or two on a first start, and reloads the page after a change in `src/`; a change to `webpack.config.js` needs a restart. The settings menu (gear, top left) holds language, theme and, at its bottom, the build's version line. To see the Campus variant, build it with `CAMPUS_DIST=1 PUBLIC_PATH=/editors/blocks/ npm run build` (from PowerShell, or with MSYS_NO_PATHCONV=1 in Git Bash) and serve `build/` under `/editors/blocks/`. Stop it by its PID (`netstat -ano | findstr :<port>`, then `taskkill /PID <pid> /T /F`), never by name: other workspaces run their own."
+	}
+}

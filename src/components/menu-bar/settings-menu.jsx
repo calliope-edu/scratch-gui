@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
+import BuildInfoLine from './build-info-line.jsx';
 import LanguageMenu from './language-menu.jsx';
 import MenuBarMenu from './menu-bar-menu.jsx';
 import ThemeMenu from './theme-menu.jsx';
@@ -48,6 +49,9 @@ const SettingsMenu = ({
             <MenuSection>
                 {canChangeLanguage && <LanguageMenu onRequestCloseSettings={onRequestClose} />}
                 {canChangeTheme && <ThemeMenu onRequestCloseSettings={onRequestClose} />}
+            </MenuSection>
+            <MenuSection>
+                <BuildInfoLine />
             </MenuSection>
         </MenuBarMenu>
     </div>

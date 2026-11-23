@@ -8,6 +8,7 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <% if (htmlWebpackPlugin.options.serviceWorker) { %>
     <script>
       // Skip PWA service-worker registration when this page is loaded
       // inside another window (controller / embedded mode). Service
@@ -30,5 +31,6 @@
         }
       }());
     </script>
+    <% } %>
   </body>
 </html>

@@ -1,0 +1,121 @@
+name: calliope-build
+
+# Builds the editor twice and pushes both builds to a build branch, one commit
+# per build:
+#
+#   /                  the editor on its own address (blocks.calliope.cc)
+#   /editors/blocks/   the editor as Calliope Campus embeds it: Campus serves it
+#                      itself under that path on its own origin
+#                      (calliope-campus docs/editors.md)
+#
+# Which branch:
+#
+#   tag calliope-vX.Y.Z      → build-live  (blocks.calliope.cc; Campus pins it)
+#   push to calliope-main    → build-dev   (blocks-dev.calliope.cc)
+#
+# Both builds are the one the Pages project makes (`npm ci`, `npm run build`, a
+# development build with scratch-vm at the commit package-lock.json pins); the
+# Campus one with CAMPUS_DIST=1 and PUBLIC_PATH (webpack.config.js): assets load
+# from /editors/blocks/, and there is no service worker, web app manifest or
+# source maps.
+#
+# Each build branch is ready to serve as it is: a Cloudflare Pages project on it
+# needs no build command and the repository root as its output directory. Each
+# commit carries BUILD.json (at the root and in editors/blocks/) naming the
+# source commits (this repo and scratch-vm) and ref. Campus pins a commit of build-live as its editors/blocks
+# submodule and moves the pin itself, so nothing built here reaches
+# campus.calliope.cc unreviewed.
+#
+# The build branches only ever grow: Campus release tags pin their older
+# commits, so rewriting them would break those builds.
+
+on:
+  push:
+    branches:
+      - calliope-main
+    tags:
+      - calliope-v*
+  workflow_dispatch:
+
+# One build after the other per build branch, so every build lands in order.
+concurrency:
+  group: calliope-build-${{ github.ref_type }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # package-lock.json resolves scratch-vm over ssh; the repo is public,
+      # so fetch it over https instead.
+      - run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
+      # With its install scripts: prepublish fetches the micro:bit hex the
+      # build imports (src/generated/microbit-hex-url.cjs).
+      - run: npm ci --no-audit --no-fund
+        env:
+          CHROMEDRIVER_SKIP_DOWNLOAD: 'true'
+
+      - name: Build for the site root
+        run: npm run build && mkdir -p "$RUNNER_TEMP/out" && cp -r build/. "$RUNNER_TEMP/out/"
+        env:
+          CI: 'true'
+          NODE_OPTIONS: --max-old-space-size=6144
+
+      - name: Build for Campus (/editors/blocks/)
+        run: npm run build && mkdir -p "$RUNNER_TEMP/out/editors/blocks" && cp -r build/. "$RUNNER_TEMP/out/editors/blocks/"
+        env:
+          CAMPUS_DIST: '1'
+          PUBLIC_PATH: /editors/blocks/
+          CI: 'true'
+          NODE_OPTIONS: --max-old-space-size=6144
+
+      - name: Push the build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_REF: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          set -euo pipefail
+          name=blocks
+          target=build-dev
+          if [ "$REF_TYPE" = tag ]; then target=build-live; fi
+          short=${SOURCE_SHA:0:7}
+          vm_sha=$(node -p "require('./package-lock.json').packages['node_modules/scratch-vm'].resolved.split('#')[1]")
+          built=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          out="$RUNNER_TEMP/out"
+          printf '{\n  "name": "%s",\n  "ref": "%s",\n  "source": "%s",\n  "scratchVm": "%s",\n  "base": "%s",\n  "built": "%s"\n}\n' \
+            "$name" "$SOURCE_REF" "$SOURCE_SHA" "$vm_sha" "/" "$built" > "$out/BUILD.json"
+          printf '{\n  "name": "%s",\n  "ref": "%s",\n  "source": "%s",\n  "scratchVm": "%s",\n  "base": "%s",\n  "built": "%s"\n}\n' \
+            "$name" "$SOURCE_REF" "$SOURCE_SHA" "$vm_sha" "/editors/$name/" "$built" > "$out/editors/$name/BUILD.json"
+          mkdir publish && cd publish
+          git init -q
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git fetch -q --depth 1 origin "$target"; then
+            git checkout -q -b "$target" FETCH_HEAD
+          else
+            git checkout -q --orphan "$target"
+          fi
+          git rm -rqf --ignore-unmatch .
+          cp -r "$out/." .
+          # Build output, kept byte for byte: no line-ending conversion on checkout.
+          printf '# Build output, kept byte for byte (no line-ending conversion on checkout).\n* -text\n' > .gitattributes
+          git add -A
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -q -m "build ${short} from ${SOURCE_REF}" -m "Source: https://github.com/${REPO}/commit/${SOURCE_SHA}" \
+              -m "scratch-vm: https://github.com/calliope-edu/scratch-vm/commit/${vm_sha}"
+          git push -q origin "$target"
+          echo "### ${target}: build ${short} from ${SOURCE_REF} (scratch-vm ${vm_sha:0:7})" >> "$GITHUB_STEP_SUMMARY"
